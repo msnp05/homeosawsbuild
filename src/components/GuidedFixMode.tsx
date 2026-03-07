@@ -1,221 +1,181 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowLeft, Share2, RotateCcw, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { DiagnosticResult } from "@/lib/diagnostic-data";
+import { ArrowLeft, ArrowRight, ShoppingCart, Unplug, Wrench, PartyPopper, ExternalLink } from "lucide-react";
 
 interface GuidedFixModeProps {
-  result: DiagnosticResult;
-  onExit: () => void;
+  onBack: () => void;
   onStartOver: () => void;
 }
 
-const GuidedFixMode = ({ result, onExit, onStartOver }: GuidedFixModeProps) => {
-  const diySteps = result.nextSteps.filter((s) => s.type === "diy");
-  const [currentStep, setCurrentStep] = useState(0);
-  const [completed, setCompleted] = useState(false);
-  const [fixWorked, setFixWorked] = useState<boolean | null>(null);
+const STEPS = [
+  { title: "Let's get your part", icon: ShoppingCart, content: "order" },
+  { title: "Step 1 of 4: Unplug the machine", icon: Unplug, content: "unplug" },
+  { title: "Step 2 of 4: Remove the back panel", icon: Wrench, content: "panel" },
+  { title: "Step 3 of 4: Locate & replace the fuse", icon: Wrench, content: "replace" },
+  { title: "Step 4 of 4: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "", icon: PartyPopper, content: "done" },
+];
 
-  const totalSteps = diySteps.length;
-  const step = diySteps[currentStep];
+const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
+  const [step, setStep] = useState(0);
+  const current = STEPS[step];
 
-  const totalMinutes = diySteps.reduce((sum, s) => sum + (s.estimatedMinutes || 0), 0);
-  const estimatedSavings = Math.round(
-    ((result.costEstimate.low * 4 + result.costEstimate.high * 4) / 2) -
-    ((result.costEstimate.low + result.costEstimate.high) / 2)
-  );
-
-  const handleNext = () => {
-    if (currentStep < totalSteps - 1) {
-      setCurrentStep((i) => i + 1);
-    } else {
-      setCompleted(true);
-    }
+  const next = () => setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  const prev = () => {
+    if (step === 0) onBack();
+    else setStep((s) => s - 1);
   };
-
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep((i) => i - 1);
-    }
-  };
-
-  const handleFixFeedback = (worked: boolean) => {
-    setFixWorked(worked);
-    console.log("[HomeOS] fix_feedback", { worked, category: result.category, symptom: result.symptom, timestamp: Date.now() });
-  };
-
-  if (completed) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mx-auto max-w-lg px-4 py-12 text-center"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-          className="mx-auto mb-6 h-20 w-20 rounded-full bg-success/20 flex items-center justify-center"
-        >
-          <Check className="h-10 w-10 text-success" />
-        </motion.div>
-
-        <h2 className="font-heading text-3xl text-foreground mb-2">You did it!</h2>
-        <p className="text-muted-foreground mb-1">
-          {totalMinutes > 0 ? `Completed in ~${totalMinutes} minutes` : "Nice work!"}
-        </p>
-        <p className="text-lg font-medium text-success mb-8">
-          Estimated savings: ~${estimatedSavings}
-        </p>
-
-        {fixWorked === null ? (
-          <div className="mb-8">
-            <p className="text-sm text-muted-foreground mb-3">Did this fix it?</p>
-            <div className="flex gap-3 justify-center">
-              <Button
-                onClick={() => handleFixFeedback(true)}
-                variant="outline"
-                className="min-h-[48px] px-8 text-base touch-manipulation"
-              >
-                Yes!
-              </Button>
-              <Button
-                onClick={() => handleFixFeedback(false)}
-                variant="outline"
-                className="min-h-[48px] px-8 text-base touch-manipulation"
-              >
-                Not yet
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-sm text-muted-foreground mb-8"
-          >
-            {fixWorked
-              ? "Awesome — glad we could help!"
-              : "No worries — you might want to talk to a pro for this one."}
-          </motion.p>
-        )}
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button
-            onClick={() => {
-              console.log("[HomeOS] share_win", { category: result.category, timestamp: Date.now() });
-            }}
-            variant="outline"
-            className="min-h-[48px] gap-2 touch-manipulation"
-          >
-            <Share2 className="h-4 w-4" /> Share my win
-          </Button>
-          <Button
-            onClick={onStartOver}
-            className="min-h-[48px] gap-2 bg-accent text-accent-foreground hover:bg-accent/90 touch-manipulation"
-          >
-            <RotateCcw className="h-4 w-4" /> Start over
-          </Button>
-        </div>
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mx-auto max-w-lg pb-28 sm:pb-0"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-[calc(100vh-60px)] flex flex-col"
     >
-      {/* Top bar */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onExit}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] touch-manipulation"
-        >
-          <X className="h-4 w-4" /> Exit
-        </button>
-        <span className="text-sm font-medium text-foreground">
-          Step {currentStep + 1} of {totalSteps}
-        </span>
-      </div>
-
       {/* Progress bar */}
-      <div className="h-1.5 rounded-full bg-muted overflow-hidden mb-8">
-        <motion.div
-          className="h-full rounded-full bg-accent"
-          animate={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-          transition={{ duration: 0.4 }}
-        />
+      <div className="px-4 pt-4">
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-accent rounded-full"
+            animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+            transition={{ duration: 0.4 }}
+          />
+        </div>
       </div>
 
-      {/* Step content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.25 }}
-          className="glass-card rounded-2xl p-6 sm:p-8"
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-10 w-10 rounded-full bg-accent text-accent-foreground flex items-center justify-center font-bold text-lg shrink-0">
-              {currentStep + 1}
-            </div>
-            <h3 className="font-heading text-xl sm:text-2xl text-foreground">
-              {step.label}
-            </h3>
-          </div>
+      {/* Content */}
+      <div className="flex-1 container mx-auto px-4 py-6 max-w-lg">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ duration: 0.3 }}
+          >
+            {current.content === "order" && <OrderStep />}
+            {current.content === "unplug" && <InstructionStep
+              title="Step 1 of 4: Unplug the machine"
+              description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve."
+              tip="Pull the dryer away from the wall gently. You may need a friend for heavy models."
+            />}
+            {current.content === "panel" && <InstructionStep
+              title="Step 2 of 4: Remove the back panel"
+              description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel."
+              tip="Keep the screws in a small bowl — they're easy to lose!"
+            />}
+            {current.content === "replace" && <InstructionStep
+              title="Step 3 of 4: Locate & replace the fuse"
+              description="The thermal fuse is a small white plastic piece near the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one."
+              tip="Take a photo of the wires before disconnecting so you remember the placement."
+            />}
+            {current.content === "test" && <InstructionStep
+              title="Step 4 of 4: Reassemble & test"
+              description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes."
+              tip="If the towel is warm and dry, you nailed it!"
+            />}
+            {current.content === "done" && <CompletionScreen onStartOver={onStartOver} />}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-          <p className="text-base text-muted-foreground leading-relaxed mb-4">
-            {step.description}
-          </p>
-
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            {step.time && <span>⏱ {step.time}</span>}
-            {step.difficulty && (
-              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground">
-                {step.difficulty}
-              </span>
-            )}
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Back link */}
-      {currentStep > 0 && (
-        <button
-          onClick={handleBack}
-          className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors min-h-[44px] touch-manipulation mx-auto"
-        >
-          <ArrowLeft className="h-4 w-4" /> Previous step
-        </button>
+      {/* Bottom nav */}
+      {current.content !== "done" && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md flex gap-3">
+          <button
+            onClick={prev}
+            className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </button>
+          <button
+            onClick={next}
+            className="flex-1 h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+          >
+            {step === 0 ? "I've ordered the part" : "Next"}
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        </div>
       )}
-
-      {/* Sticky bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-md p-3 sm:hidden">
-        <Button
-          onClick={handleNext}
-          className="w-full bg-accent text-accent-foreground hover:bg-accent/90 min-h-[56px] text-base rounded-xl touch-manipulation"
-        >
-          <Check className="h-4 w-4 mr-2" />
-          {currentStep < totalSteps - 1 ? "Done — next step" : "Done — finish"}
-        </Button>
-      </div>
-
-      {/* Desktop submit */}
-      <div className="hidden sm:flex justify-end mt-6">
-        <Button
-          onClick={handleNext}
-          className="bg-accent text-accent-foreground hover:bg-accent/90 min-h-[56px] px-8 text-base rounded-xl touch-manipulation"
-        >
-          <Check className="h-4 w-4 mr-2" />
-          {currentStep < totalSteps - 1 ? "Done — next step" : "Done — finish"}
-        </Button>
-      </div>
     </motion.div>
   );
 };
+
+const OrderStep = () => (
+  <div>
+    <h2 className="font-heading text-3xl text-foreground mb-2">Let's get your part</h2>
+    <p className="text-muted-foreground mb-6">You need one replacement part. We found it for you.</p>
+    <div className="glass-card rounded-2xl p-5">
+      <div className="flex gap-4">
+        <div className="h-20 w-20 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+          <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-foreground font-semibold">Samsung Thermal Fuse DC47</h3>
+          <p className="text-accent font-bold text-lg">$12.80</p>
+          <p className="text-sm text-success font-medium">Delivers Today</p>
+        </div>
+      </div>
+      <button className="mt-4 w-full h-12 rounded-xl bg-foreground text-background font-semibold flex items-center justify-center gap-2 touch-manipulation active:scale-[0.98] transition-transform">
+        <ExternalLink className="h-4 w-4" />
+        Buy on Amazon
+      </button>
+    </div>
+  </div>
+);
+
+const InstructionStep = ({ title, description, tip }: { title: string; description: string; tip: string }) => (
+  <div>
+    <h2 className="font-heading text-2xl text-foreground mb-4">{title}</h2>
+    <div className="relative rounded-2xl bg-muted/50 h-48 mb-6 overflow-hidden flex items-center justify-center">
+      <div className="text-center text-muted-foreground">
+        <Wrench className="h-10 w-10 mx-auto mb-2 text-accent" />
+        <p className="text-sm">AR Overlay</p>
+      </div>
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ repeat: Infinity, duration: 1.5 }}
+        className="absolute bottom-4 right-6 h-8 w-8 rounded-full bg-accent flex items-center justify-center shadow-lg"
+      >
+        <ArrowRight className="h-4 w-4 text-accent-foreground -rotate-90" />
+      </motion.div>
+    </div>
+    <p className="text-foreground text-base leading-relaxed mb-4">{description}</p>
+    <div className="rounded-xl bg-warning/10 border border-warning/20 p-4">
+      <p className="text-sm text-foreground"><span className="font-semibold">💡 Tip:</span> {tip}</p>
+    </div>
+  </div>
+);
+
+const CompletionScreen = ({ onStartOver }: { onStartOver: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
+  >
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+      className="h-20 w-20 rounded-full bg-success/15 flex items-center justify-center mb-6"
+    >
+      <PartyPopper className="h-10 w-10 text-success" />
+    </motion.div>
+    <h2 className="font-heading text-3xl text-foreground mb-2">You did it! 🎉</h2>
+    <p className="text-lg text-muted-foreground mb-2">
+      You just saved <span className="text-success font-bold">~$185</span> on a repair tech.
+    </p>
+    <p className="text-sm text-muted-foreground mb-8">
+      Total cost: $12.80 for the part + 15 minutes of your time.
+    </p>
+    <button
+      onClick={onStartOver}
+      className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"
+    >
+      Back to Home
+    </button>
+  </motion.div>
+);
 
 export default GuidedFixMode;
