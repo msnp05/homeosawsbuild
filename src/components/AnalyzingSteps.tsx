@@ -1,70 +1,105 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Search, ListChecks, Lightbulb, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, FileSearch, CheckCircle2 } from "lucide-react";
 
 interface AnalyzingStepsProps {
-  onComplete?: () => void;
+  onComplete: () => void;
 }
 
 const STEPS = [
-  { label: "Reading what you shared…", icon: Search },
-  { label: "Checking similar issues…", icon: ListChecks },
-  { label: "Putting your options together…", icon: Lightbulb },
+  {
+    icon: Heart,
+    text: "I hear you. Cold dryers are frustrating...",
+    duration: 2500,
+  },
+  {
+    icon: FileSearch,
+    text: "Pulling the schematics for your Samsung DV42H...",
+    duration: 2500,
+  },
+  {
+    icon: CheckCircle2,
+    text: "Found the issue. It's an easy fix.",
+    duration: 2000,
+  },
 ];
 
 const AnalyzingSteps = ({ onComplete }: AnalyzingStepsProps) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setActiveStep(1), 3000);
-    const t2 = setTimeout(() => setActiveStep(2), 7000);
-    const t3 = setTimeout(() => {
-      if (onComplete) onComplete();
-    }, 10000);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [onComplete]);
+    if (currentStep >= STEPS.length) {
+      const t = setTimeout(onComplete, 600);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setCurrentStep((s) => s + 1), STEPS[currentStep].duration);
+    return () => clearTimeout(t);
+  }, [currentStep, onComplete]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center py-24 px-4"
+      className="flex flex-col items-center justify-center min-h-[calc(100vh-60px)] px-6"
     >
-      <div className="space-y-4 w-full max-w-xs">
+      <div className="max-w-sm w-full space-y-6">
         {STEPS.map((step, i) => {
           const Icon = step.icon;
-          const isActive = i === activeStep;
-          const isDone = i < activeStep;
+          const isActive = i === currentStep;
+          const isDone = i < currentStep;
+
           return (
-            <motion.div
-              key={step.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: isDone || isActive ? 1 : 0.4, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-3"
-            >
-              <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
-                isDone ? "bg-success text-success-foreground" : isActive ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"
-              }`}>
-                {isDone ? (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300 }}>
-                    <Check className="h-4 w-4" />
-                  </motion.div>
-                ) : (
-                  <Icon className={`h-4 w-4 ${isActive ? "animate-pulse-soft" : ""}`} />
-                )}
-              </div>
-              <span className={`text-sm transition-colors duration-300 ${
-                isActive ? "text-foreground font-semibold" : "text-muted-foreground"
-              }`}>
-                {step.label}
-              </span>
-            </motion.div>
+            <AnimatePresence key={i}>
+              {(isDone || isActive) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: isDone ? 0.5 : 1, y: 0 }}
+                  transition={{ duration: 0.5, type: "spring" }}
+                  className="flex items-start gap-4"
+                >
+                  <div
+                    className={`mt-1 h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-500 ${
+                      isDone ? "bg-success/20" : "bg-accent/20"
+                    }`}
+                  >
+                    <Icon
+                      className={`h-5 w-5 transition-colors duration-500 ${
+                        isDone ? "text-success" : "text-accent"
+                      }`}
+                    />
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-foreground text-base font-medium leading-snug">
+                      {step.text}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           );
         })}
+
+        {/* Progress dots */}
+        <div className="flex items-center justify-center gap-2 pt-4">
+          {STEPS.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                i < currentStep
+                  ? "w-2 bg-success"
+                  : i === currentStep
+                  ? "w-8 bg-accent"
+                  : "w-2 bg-muted"
+              }`}
+            />
+          ))}
+        </div>
+
+        <p className="text-center text-xs text-muted-foreground pt-2">
+          This usually takes about 10 seconds
+        </p>
       </div>
-      <p className="text-sm text-muted-foreground mt-8">This usually takes about 10 seconds</p>
     </motion.div>
   );
 };
