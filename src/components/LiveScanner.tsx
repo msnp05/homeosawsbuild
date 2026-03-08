@@ -38,6 +38,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
   const [recognized, setRecognized] = useState(false);
   const [muted, setMuted] = useState(false);
 
+  // Model sticker verification phase
+  const [stickerPhase, setStickerPhase] = useState<"scanning" | "confirmed" | "done">("scanning");
+
   // Machine audio
   const [machineStatusIdx, setMachineStatusIdx] = useState(0);
 
@@ -54,11 +57,19 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
   const [showQuestion, setShowQuestion] = useState(false);
   const [showBreakerHelper, setShowBreakerHelper] = useState(false);
 
-  // AR recognition
+  // Model sticker verification sequence (3 seconds total)
   useEffect(() => {
+    const t1 = setTimeout(() => setStickerPhase("confirmed"), 2000);
+    const t2 = setTimeout(() => setStickerPhase("done"), 3000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // AR recognition — starts after sticker phase
+  useEffect(() => {
+    if (stickerPhase !== "done") return;
     const t = setTimeout(() => setRecognized(true), 1500);
     return () => clearTimeout(t);
-  }, []);
+  }, [stickerPhase]);
 
   // Machine status cycling (every 2s)
   useEffect(() => {
