@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, ShoppingCart, Unplug, Wrench,
   PartyPopper, Check, Package, Zap, AlertCircle, Info,
+  LifeBuoy, X as XIcon, AlertTriangle,
 } from "lucide-react";
 
 interface GuidedFixModeProps {
   answers?: Record<string, string>;
   onBack: () => void;
   onStartOver: () => void;
+  onProCall?: () => void;
 }
 
 type PrepPhase = "testing" | "inventory" | "cart" | "transitioning" | null;
@@ -39,7 +41,7 @@ const REPAIR_STEPS = [
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
-const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps) => {
+const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedFixModeProps) => {
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
 
@@ -47,6 +49,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps
   const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
   const [step, setStep] = useState(0);
+  const [showSOS, setShowSOS] = useState(false);
 
   const toggleFailedPart = (id: string) => {
     setFailedParts((prev) => {
@@ -176,6 +179,64 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps
           )}
         </AnimatePresence>
       </div>
+
+      {/* SOS Button — visible on active repair steps */}
+      {prepPhase === null && current.content !== "done" && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowSOS(true)}
+          className="fixed top-4 right-4 z-30 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
+        >
+          <LifeBuoy className="h-4 w-4 text-destructive" />
+          <span className="text-xs font-semibold text-destructive">Stuck? Call a Pro</span>
+        </motion.button>
+      )}
+
+      {/* SOS Bottom Sheet */}
+      <AnimatePresence>
+        {showSOS && (
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300 }}
+            className="fixed inset-x-0 bottom-0 z-50 bg-card rounded-t-3xl shadow-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
+          >
+            <div className="w-12 h-1 rounded-full bg-muted mx-auto mb-4" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <LifeBuoy className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-lg text-foreground">Don't worry, we've got you.</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-5 break-words">
+              We'll pass your current step and diagnostic data to a Master Tech. They'll jump on video and talk you through this exact step.
+            </p>
+            <div className="space-y-3">
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setShowSOS(false);
+                  onProCall?.();
+                }}
+                className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-semibold text-base touch-manipulation"
+              >
+                Video Call Pro — $15
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setShowSOS(false)}
+                className="w-full h-14 rounded-2xl bg-secondary text-secondary-foreground font-semibold text-base touch-manipulation"
+              >
+                Nevermind, I'll keep trying
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bottom nav — only for repair steps */}
       {prepPhase === null && current.content !== "done" && (
@@ -539,9 +600,20 @@ const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: numb
       <p className="text-lg text-muted-foreground mb-2">
         You just saved <span className="text-success font-bold">~$185</span> on a repair tech.
       </p>
-      <p className="text-sm text-muted-foreground mb-8">
+      <p className="text-sm text-muted-foreground mb-4">
         Total cost: ${partsTotal.toFixed(2)} for parts + 15 minutes of your time.
       </p>
+
+      {/* Reassembly safety warning */}
+      <div className="rounded-xl bg-warning/10 border border-warning/30 p-4 mb-6 max-w-xs text-left">
+        <div className="flex gap-2">
+          <AlertTriangle className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-foreground break-words">
+            <span className="font-semibold">Important:</span> Plug it in and test it BEFORE you push the heavy machine back against the wall!
+          </p>
+        </div>
+      </div>
+
       <button
         onClick={onStartOver}
         className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"

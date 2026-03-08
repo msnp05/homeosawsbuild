@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Mic, MicOff, X, Activity, AudioLines } from "lucide-react";
+import { ArrowLeft, Sparkles, Mic, MicOff, X, Activity, AudioLines, Search, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import dryerImage from "@/assets/dryer-viewfinder.jpg";
 
@@ -38,6 +38,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
   const [recognized, setRecognized] = useState(false);
   const [muted, setMuted] = useState(false);
 
+  // Model sticker verification phase
+  const [stickerPhase, setStickerPhase] = useState<"scanning" | "confirmed" | "done">("scanning");
+
   // Machine audio
   const [machineStatusIdx, setMachineStatusIdx] = useState(0);
 
@@ -54,32 +57,40 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
   const [showQuestion, setShowQuestion] = useState(false);
   const [showBreakerHelper, setShowBreakerHelper] = useState(false);
 
-  // AR recognition
+  // Model sticker verification sequence (3 seconds total)
   useEffect(() => {
-    const t = setTimeout(() => setRecognized(true), 1500);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setStickerPhase("confirmed"), 2000);
+    const t2 = setTimeout(() => setStickerPhase("done"), 3000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  // Machine status cycling (every 2s)
+  // AR recognition — starts after sticker phase
   useEffect(() => {
-    if (paused) return;
+    if (stickerPhase !== "done") return;
+    const t = setTimeout(() => setRecognized(true), 1500);
+    return () => clearTimeout(t);
+  }, [stickerPhase]);
+
+  // Machine status cycling (every 2s) — only after sticker done
+  useEffect(() => {
+    if (paused || stickerPhase !== "done") return;
     const interval = setInterval(() => {
       setMachineStatusIdx((p) => Math.min(p + 1, MACHINE_STATUSES.length - 1));
     }, 2000);
     return () => clearInterval(interval);
   }, [paused]);
 
-  // Voice transcription word-by-word
+  // Voice transcription word-by-word — only after sticker done
   useEffect(() => {
-    if (muted || paused) return;
+    if (muted || paused || stickerPhase !== "done") return;
     if (visibleWords >= TRANSCRIPT_WORDS.length) return;
     const t = setTimeout(() => setVisibleWords((w) => w + 1), 1200);
     return () => clearTimeout(t);
   }, [visibleWords, muted, paused]);
 
-  // Confidence progression
+  // Confidence progression — only after sticker done
   useEffect(() => {
-    if (paused) return;
+    if (paused || stickerPhase !== "done") return;
     const timers = [
       setTimeout(() => { setConfidenceStage(1); }, 2000),
       setTimeout(() => { setConfidenceStage(2); }, 5000),
@@ -207,6 +218,57 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-hidden min-h-0">
         <img src={dryerImage} alt="Dryer viewfinder" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-transparent to-foreground/40" />
+
+        {/* Model Sticker Verification Overlay */}
+        <AnimatePresence>
+          {stickerPhase !== "done" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-foreground/60 backdrop-blur-sm"
+            >
+              {stickerPhase === "scanning" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center gap-4 px-6 text-center"
+                >
+                  {/* AR target box */}
+                  <motion.div
+                    animate={{ scale: [1, 1.04, 1], borderColor: ["hsl(var(--accent))", "hsl(var(--accent) / 0.5)", "hsl(var(--accent))"] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="w-40 h-28 border-2 border-accent rounded-xl border-dashed flex items-center justify-center"
+                  >
+                    <Search className="h-8 w-8 text-accent/80" />
+                  </motion.div>
+                  <p className="text-primary-foreground text-sm font-semibold leading-snug max-w-[260px]">
+                    Open the door and point the camera at the model sticker
+                  </p>
+                  <p className="text-primary-foreground/60 text-xs">Getting exact part numbers...</p>
+                </motion.div>
+              )}
+              {stickerPhase === "confirmed" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="flex flex-col items-center gap-3 px-6 text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    className="h-14 w-14 rounded-full bg-success/20 flex items-center justify-center"
+                  >
+                    <CheckCircle className="h-8 w-8 text-success" />
+                  </motion.div>
+                  <p className="text-success font-semibold text-sm">✓ Model DV42H Confirmed. Parts mapped.</p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Mic indicator */}
         <motion.div

@@ -10,9 +10,10 @@ interface DiagnosisResultsProps {
   onGuidedFix: () => void;
   onProCall: () => void;
   onStartOver: () => void;
+  isLowConfidence?: boolean;
 }
 
-const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver }: DiagnosisResultsProps) => {
+const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence = false }: DiagnosisResultsProps) => {
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const ventDirty = answers.vent_cleaning === "It's been a while" || answers.vent_cleaning === "Never / Not sure";
   const topCause = isGas ? "Gas Valve Solenoid Coils" : "Blown Thermal Fuse";
@@ -29,25 +30,46 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver }:
       className="pb-32 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
-        {/* Success banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl bg-success/10 border border-success/20 p-5 mb-6"
-        >
-          <div className="flex items-start gap-3">
-            <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
-            <div>
-              <h2 className="font-heading text-2xl text-foreground mb-1">
-                Good news: We know exactly what's wrong.
-              </h2>
-              <p className="text-foreground/80 text-base font-medium break-words">
-                Most likely: <span className="text-foreground font-semibold">{topCause}</span>
-              </p>
+        {/* Success / Low Confidence banner */}
+        {isLowConfidence ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl bg-primary/10 border border-primary/20 p-5 mb-6"
+          >
+            <div className="flex items-start gap-3">
+              <Info className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Complex Issue Detected
+                </h2>
+                <p className="text-foreground/80 text-sm break-words">
+                  Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the audio/video data we just collected.
+                </p>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl bg-success/10 border border-success/20 p-5 mb-6"
+          >
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
+              <div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Good news: We know exactly what's wrong.
+                </h2>
+                <p className="text-foreground/80 text-base font-medium break-words">
+                  Most likely: <span className="text-foreground font-semibold">{topCause}</span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Vent warning banner */}
         {ventDirty && (
@@ -82,63 +104,76 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver }:
           </p>
         </motion.div>
 
-        {/* AI Reasoning Card */}
-        <DiagnosticReasoning isGas={isGas} />
+        {/* AI Reasoning Card — only in high confidence */}
+        {!isLowConfidence && <DiagnosticReasoning isGas={isGas} />}
 
-        {/* Card A: Fix it myself */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="glass-card rounded-2xl p-5 mb-4"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-xl bg-accent/15 flex items-center justify-center">
-              <Wrench className="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
-              <p className="text-sm text-muted-foreground flex items-start gap-1">
-                <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
-                <span className="break-words">
-                  Takes ~15 mins · Parts: {partPrice} · Tools: Screwdriver, Multimeter
-                </span>
-              </p>
-            </div>
-          </div>
-
-          {/* Parts tooltip */}
-          <PartsTooltip label={partLabel} isGas={isGas} />
-
-          <button
-            onClick={onGuidedFix}
-            className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
+        {/* Card A: Fix it myself — hidden in low confidence */}
+        {!isLowConfidence && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass-card rounded-2xl p-5 mb-4"
           >
-            Start Guided Fix
-          </button>
-        </motion.div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-10 w-10 rounded-xl bg-accent/15 flex items-center justify-center">
+                <Wrench className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
+                <p className="text-sm text-muted-foreground flex items-start gap-1">
+                  <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">
+                    Takes ~15 mins · Parts: {partPrice} · Tools: Screwdriver, Multimeter
+                  </span>
+                </p>
+              </div>
+            </div>
 
-        {/* Card B: Talk to a pro */}
+            {/* Parts tooltip */}
+            <PartsTooltip label={partLabel} isGas={isGas} />
+
+            <button
+              onClick={onGuidedFix}
+              className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
+            >
+              Start Guided Fix
+            </button>
+          </motion.div>
+        )}
+
+        {/* Card B: Talk to a pro — expanded in low confidence */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="glass-card rounded-2xl p-5 mb-6"
+          transition={{ delay: isLowConfidence ? 0.2 : 0.5 }}
+          className={`glass-card rounded-2xl p-5 mb-6 ${isLowConfidence ? "border-2 border-primary/30" : ""}`}
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <Video className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-foreground font-semibold text-lg">I'd rather talk to a pro</h3>
-              <p className="text-sm text-muted-foreground">Video call a certified tech right now.</p>
+              <h3 className="text-foreground font-semibold text-lg">
+                {isLowConfidence ? "Talk to a certified tech" : "I'd rather talk to a pro"}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {isLowConfidence
+                  ? "A pro will review your audio/video data live."
+                  : "Video call a certified tech right now."}
+              </p>
             </div>
           </div>
+          {isLowConfidence && (
+            <p className="text-sm text-muted-foreground mb-4 break-words">
+              Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
+            </p>
+          )}
           <button
             onClick={onProCall}
             className="w-full h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-base active:scale-[0.98] transition-transform touch-manipulation"
           >
-            Connect for $15
+            Connect to Pro — $15
           </button>
         </motion.div>
 
