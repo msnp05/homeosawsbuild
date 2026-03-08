@@ -364,7 +364,7 @@ const InstructionStep = ({ title, description, tip }: { title: string; descripti
         <ArrowRight className="h-4 w-4 text-accent-foreground -rotate-90" />
       </motion.div>
     </div>
-    <p className="text-foreground text-base leading-relaxed mb-4">{description}</p>
+    <p className="text-foreground text-sm sm:text-base leading-relaxed mb-4 break-words">{description}</p>
     <div className="rounded-xl bg-warning/10 border border-warning/20 p-4">
       <p className="text-sm text-foreground"><span className="font-semibold">💡 Tip:</span> {tip}</p>
     </div>

@@ -100,6 +100,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
   h1, h2, h3 {
     font-family: var(--font-heading);
