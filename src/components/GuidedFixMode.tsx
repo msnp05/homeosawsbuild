@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, ShoppingCart, Unplug, Wrench,
   PartyPopper, Check, Package, Zap, AlertCircle, Info,
+  LifeBuoy, X as XIcon, AlertTriangle,
 } from "lucide-react";
 
 interface GuidedFixModeProps {
