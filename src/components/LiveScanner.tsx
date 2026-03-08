@@ -219,6 +219,57 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
         <img src={dryerImage} alt="Dryer viewfinder" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-transparent to-foreground/40" />
 
+        {/* Model Sticker Verification Overlay */}
+        <AnimatePresence>
+          {stickerPhase !== "done" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-foreground/60 backdrop-blur-sm"
+            >
+              {stickerPhase === "scanning" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center gap-4 px-6 text-center"
+                >
+                  {/* AR target box */}
+                  <motion.div
+                    animate={{ scale: [1, 1.04, 1], borderColor: ["hsl(var(--accent))", "hsl(var(--accent) / 0.5)", "hsl(var(--accent))"] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="w-40 h-28 border-2 border-accent rounded-xl border-dashed flex items-center justify-center"
+                  >
+                    <Search className="h-8 w-8 text-accent/80" />
+                  </motion.div>
+                  <p className="text-primary-foreground text-sm font-semibold leading-snug max-w-[260px]">
+                    Open the door and point the camera at the model sticker
+                  </p>
+                  <p className="text-primary-foreground/60 text-xs">Getting exact part numbers...</p>
+                </motion.div>
+              )}
+              {stickerPhase === "confirmed" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="flex flex-col items-center gap-3 px-6 text-center"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    className="h-14 w-14 rounded-full bg-success/20 flex items-center justify-center"
+                  >
+                    <CheckCircle className="h-8 w-8 text-success" />
+                  </motion.div>
+                  <p className="text-success font-semibold text-sm">✓ Model DV42H Confirmed. Parts mapped.</p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Mic indicator */}
         <motion.div
           initial={{ opacity: 0, x: 10 }}
