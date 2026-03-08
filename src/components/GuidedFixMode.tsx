@@ -600,9 +600,20 @@ const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: numb
       <p className="text-lg text-muted-foreground mb-2">
         You just saved <span className="text-success font-bold">~$185</span> on a repair tech.
       </p>
-      <p className="text-sm text-muted-foreground mb-8">
+      <p className="text-sm text-muted-foreground mb-4">
         Total cost: ${partsTotal.toFixed(2)} for parts + 15 minutes of your time.
       </p>
+
+      {/* Reassembly safety warning */}
+      <div className="rounded-xl bg-warning/10 border border-warning/30 p-4 mb-6 max-w-xs text-left">
+        <div className="flex gap-2">
+          <AlertTriangle className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-foreground break-words">
+            <span className="font-semibold">Important:</span> Plug it in and test it BEFORE you push the heavy machine back against the wall!
+          </p>
+        </div>
+      </div>
+
       <button
         onClick={onStartOver}
         className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"

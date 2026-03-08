@@ -104,63 +104,76 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
           </p>
         </motion.div>
 
-        {/* AI Reasoning Card */}
-        <DiagnosticReasoning isGas={isGas} />
+        {/* AI Reasoning Card — only in high confidence */}
+        {!isLowConfidence && <DiagnosticReasoning isGas={isGas} />}
 
-        {/* Card A: Fix it myself */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="glass-card rounded-2xl p-5 mb-4"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-xl bg-accent/15 flex items-center justify-center">
-              <Wrench className="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
-              <p className="text-sm text-muted-foreground flex items-start gap-1">
-                <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
-                <span className="break-words">
-                  Takes ~15 mins · Parts: {partPrice} · Tools: Screwdriver, Multimeter
-                </span>
-              </p>
-            </div>
-          </div>
-
-          {/* Parts tooltip */}
-          <PartsTooltip label={partLabel} isGas={isGas} />
-
-          <button
-            onClick={onGuidedFix}
-            className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
+        {/* Card A: Fix it myself — hidden in low confidence */}
+        {!isLowConfidence && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass-card rounded-2xl p-5 mb-4"
           >
-            Start Guided Fix
-          </button>
-        </motion.div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-10 w-10 rounded-xl bg-accent/15 flex items-center justify-center">
+                <Wrench className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
+                <p className="text-sm text-muted-foreground flex items-start gap-1">
+                  <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">
+                    Takes ~15 mins · Parts: {partPrice} · Tools: Screwdriver, Multimeter
+                  </span>
+                </p>
+              </div>
+            </div>
 
-        {/* Card B: Talk to a pro */}
+            {/* Parts tooltip */}
+            <PartsTooltip label={partLabel} isGas={isGas} />
+
+            <button
+              onClick={onGuidedFix}
+              className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
+            >
+              Start Guided Fix
+            </button>
+          </motion.div>
+        )}
+
+        {/* Card B: Talk to a pro — expanded in low confidence */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="glass-card rounded-2xl p-5 mb-6"
+          transition={{ delay: isLowConfidence ? 0.2 : 0.5 }}
+          className={`glass-card rounded-2xl p-5 mb-6 ${isLowConfidence ? "border-2 border-primary/30" : ""}`}
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <Video className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-foreground font-semibold text-lg">I'd rather talk to a pro</h3>
-              <p className="text-sm text-muted-foreground">Video call a certified tech right now.</p>
+              <h3 className="text-foreground font-semibold text-lg">
+                {isLowConfidence ? "Talk to a certified tech" : "I'd rather talk to a pro"}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {isLowConfidence
+                  ? "A pro will review your audio/video data live."
+                  : "Video call a certified tech right now."}
+              </p>
             </div>
           </div>
+          {isLowConfidence && (
+            <p className="text-sm text-muted-foreground mb-4 break-words">
+              Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
+            </p>
+          )}
           <button
             onClick={onProCall}
             className="w-full h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-base active:scale-[0.98] transition-transform touch-manipulation"
           >
-            Connect for $15
+            Connect to Pro — $15
           </button>
         </motion.div>
 

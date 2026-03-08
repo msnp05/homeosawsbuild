@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Mic, MicOff, X, Activity, AudioLines } from "lucide-react";
+import { ArrowLeft, Sparkles, Mic, MicOff, X, Activity, AudioLines, Search, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import dryerImage from "@/assets/dryer-viewfinder.jpg";
 
