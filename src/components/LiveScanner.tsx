@@ -195,10 +195,17 @@ const LiveScanner = ({ onAnalyze, onBack }: LiveScannerProps) => {
                 : "bg-card/50 border border-border/30"
             }`}
           >
-            {muted ? (
+          {muted ? (
               <MicOff className="h-5 w-5 text-danger" />
             ) : (
-              <Mic className="h-5 w-5 text-muted-foreground" />
+              <div className="relative">
+                <Mic className="h-5 w-5 text-accent" />
+                <motion.div
+                  animate={{ scale: [1, 1.8, 1], opacity: [0.6, 0, 0.6] }}
+                  transition={{ repeat: Infinity, duration: 1.4 }}
+                  className="absolute inset-0 rounded-full bg-accent/40"
+                />
+              </div>
             )}
           </motion.button>
 
