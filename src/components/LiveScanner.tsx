@@ -312,8 +312,89 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
 
+        {/* Embedded Dual-channel audio panels */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-2 space-y-1.5">
+          {/* Panel A: Machine Sound */}
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+            <div className="flex items-center gap-2 mb-1">
+              <Activity className="h-3.5 w-3.5 text-accent" />
+              <span className="text-[10px] font-semibold text-primary-foreground/80 uppercase tracking-wide">Listening to your dryer...</span>
+            </div>
+            <div className="flex items-center justify-center gap-[2px] h-6 mb-1">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="w-[3px] rounded-full bg-accent/70"
+                  animate={{
+                    height: paused ? [5, 5] : [4, 10 + Math.sin(i * 0.8) * 8, 4],
+                  }}
+                  transition={{
+                    repeat: paused ? 0 : Infinity,
+                    duration: 0.6 + Math.random() * 0.6,
+                    delay: i * 0.04,
+                    ease: "easeInOut",
+                  }}
+                  style={{ minHeight: 3 }}
+                />
+              ))}
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={machineStatusIdx}
+                initial={{ opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                className={`text-[10px] font-medium ${
+                  MACHINE_STATUSES[machineStatusIdx].type === "good"
+                    ? "text-success"
+                    : MACHINE_STATUSES[machineStatusIdx].type === "warn"
+                    ? "text-warning"
+                    : "text-primary-foreground/60"
+                }`}
+              >
+                {MACHINE_STATUSES[machineStatusIdx].text}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          {/* Panel B: Your Voice */}
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <AudioLines className="h-3.5 w-3.5 text-accent" />
+                <span className="text-[10px] font-semibold text-primary-foreground/80 uppercase tracking-wide">Listening to you...</span>
+              </div>
+              {!muted && (
+                <div className="flex items-center gap-1">
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                    transition={{ repeat: Infinity, duration: 1 }}
+                    className="h-1.5 w-1.5 rounded-full bg-danger"
+                  />
+                  <span className="text-[9px] text-danger/80 font-medium">REC</span>
+                </div>
+              )}
+            </div>
+            <div className="min-h-[24px]">
+              {muted ? (
+                <p className="text-[10px] text-primary-foreground/40 italic">Microphone muted</p>
+              ) : (
+                <p className="text-xs text-primary-foreground/90 italic leading-snug break-words whitespace-normal">
+                  "{TRANSCRIPT_WORDS.slice(0, visibleWords).join(" ")}
+                  {visibleWords < TRANSCRIPT_WORDS.length && (
+                    <motion.span
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ repeat: Infinity, duration: 0.6 }}
+                      className="inline-block w-0.5 h-3 bg-primary-foreground/70 ml-0.5 align-middle"
+                    />
+                  )}
+                  "
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Bottom mute toggle */}
