@@ -31,7 +31,7 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
               <h2 className="font-heading text-2xl text-foreground mb-1">
                 Good news: We know exactly what's wrong.
               </h2>
-              <p className="text-foreground/80 text-base font-medium">
+              <p className="text-foreground/80 text-base font-medium break-words">
                 Most likely: <span className="text-foreground font-semibold">Blown Thermal Fuse</span>
               </p>
             </div>
