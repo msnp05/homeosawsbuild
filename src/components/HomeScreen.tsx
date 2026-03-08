@@ -112,9 +112,9 @@ const HomeScreen = ({ onScan, onTextSubmit }: HomeScreenProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        className="absolute bottom-8 text-center"
+        className="w-full mt-auto pt-6 pb-6 text-center px-4"
       >
-        <p className="text-xs text-muted-foreground/60">
+        <p className="text-xs text-muted-foreground/60 break-words">
           For guidance only — always consult a licensed pro for major work.
         </p>
       </motion.div>
