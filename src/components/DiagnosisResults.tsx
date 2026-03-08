@@ -30,25 +30,46 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       className="pb-32 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
-        {/* Success banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl bg-success/10 border border-success/20 p-5 mb-6"
-        >
-          <div className="flex items-start gap-3">
-            <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
-            <div>
-              <h2 className="font-heading text-2xl text-foreground mb-1">
-                Good news: We know exactly what's wrong.
-              </h2>
-              <p className="text-foreground/80 text-base font-medium break-words">
-                Most likely: <span className="text-foreground font-semibold">{topCause}</span>
-              </p>
+        {/* Success / Low Confidence banner */}
+        {isLowConfidence ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl bg-primary/10 border border-primary/20 p-5 mb-6"
+          >
+            <div className="flex items-start gap-3">
+              <Info className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Complex Issue Detected
+                </h2>
+                <p className="text-foreground/80 text-sm break-words">
+                  Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the audio/video data we just collected.
+                </p>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl bg-success/10 border border-success/20 p-5 mb-6"
+          >
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
+              <div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Good news: We know exactly what's wrong.
+                </h2>
+                <p className="text-foreground/80 text-base font-medium break-words">
+                  Most likely: <span className="text-foreground font-semibold">{topCause}</span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Vent warning banner */}
         {ventDirty && (
