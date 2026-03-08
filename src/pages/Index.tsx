@@ -44,7 +44,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background overflow-x-hidden max-w-full">
       {/* Minimal header */}
       {step !== "scanner" && step !== "pro" && (
         <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/30">

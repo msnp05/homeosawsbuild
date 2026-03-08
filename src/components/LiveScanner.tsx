@@ -65,7 +65,7 @@ const LiveScanner = ({ onAnalyze, onBack }: LiveScannerProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-foreground/95 flex flex-col"
+      className="fixed inset-0 z-50 bg-foreground/95 flex flex-col h-[100dvh] overflow-hidden"
     >
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-4 pt-4 pb-2">
@@ -183,7 +183,7 @@ const LiveScanner = ({ onAnalyze, onBack }: LiveScannerProps) => {
       </div>
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md">
+      <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md">
         <div className="flex gap-3">
           {/* Mute toggle */}
           <motion.button

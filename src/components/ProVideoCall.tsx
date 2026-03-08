@@ -20,7 +20,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-foreground flex flex-col"
+      className="fixed inset-0 z-50 bg-foreground flex flex-col h-[100dvh] overflow-hidden"
     >
       {state === "ringing" && (
         <div className="flex-1 flex flex-col items-center justify-center px-6">
@@ -47,7 +47,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
           </motion.p>
 
           {/* Cancel */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 flex justify-center">
+          <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] flex justify-center">
             <button
               onClick={onBack}
               className="h-16 w-16 rounded-full bg-danger flex items-center justify-center touch-manipulation"
@@ -96,7 +96,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
           </motion.div>
 
           {/* Call controls */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-foreground/90 backdrop-blur-md">
+          <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-foreground/90 backdrop-blur-md">
             <div className="flex items-center justify-center gap-6">
               <button className="h-14 w-14 rounded-full bg-card/15 flex items-center justify-center touch-manipulation">
                 <Mic className="h-6 w-6 text-primary-foreground" />

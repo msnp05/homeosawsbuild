@@ -97,14 +97,25 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
+    max-width: 100vw;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   h1, h2, h3 {
     font-family: var(--font-heading);
+  }
+  p, span, li {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 

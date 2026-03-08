@@ -67,7 +67,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-[calc(100vh-60px)] flex flex-col"
+      className="min-h-[calc(100dvh-60px)] flex flex-col overflow-x-hidden max-w-full"
     >
       {/* Progress bar */}
       {prepPhase !== "transitioning" && (
@@ -83,7 +83,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
       )}
 
       {/* Content */}
-      <div className="flex-1 container mx-auto px-4 py-6 max-w-lg">
+      <div className="flex-1 container mx-auto px-4 py-6 max-w-lg pb-36">
         <AnimatePresence mode="wait">
           {prepPhase === "inventory" && (
             <InventoryCheck
@@ -132,7 +132,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
 
       {/* Bottom nav — only for repair steps */}
       {prepPhase === null && current.content !== "done" && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md flex gap-3">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
           <button
             onClick={prev}
             className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
@@ -206,7 +206,7 @@ const InventoryCheck = ({
     </div>
 
     {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md flex gap-3">
+    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
       <button
         onClick={onBack}
         className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
@@ -259,7 +259,7 @@ const SmartCart = ({
     </div>
 
     {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md">
+    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md">
       <div className="flex justify-between items-center mb-3 px-1">
         <span className="text-muted-foreground text-sm">Total</span>
         <span className="text-foreground font-bold text-xl">${total.toFixed(2)}</span>
