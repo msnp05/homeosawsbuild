@@ -8,7 +8,7 @@ interface DiagnosisResultsProps {
 }
 
 const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResultsProps) => {
-  const [showCauses, setShowCauses] = useState(false);
+  
 
   return (
     <motion.div
