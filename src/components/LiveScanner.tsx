@@ -71,9 +71,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     return () => clearTimeout(t);
   }, [stickerPhase]);
 
-  // Machine status cycling (every 2s)
+  // Machine status cycling (every 2s) — only after sticker done
   useEffect(() => {
-    if (paused) return;
+    if (paused || stickerPhase !== "done") return;
     const interval = setInterval(() => {
       setMachineStatusIdx((p) => Math.min(p + 1, MACHINE_STATUSES.length - 1));
     }, 2000);
