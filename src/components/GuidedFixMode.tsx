@@ -298,12 +298,11 @@ const CartItem = ({ label, price, required }: { label: string; price: string; re
 const TransitionScreen = ({ onStart }: { onStart: () => void }) => {
   const [phase, setPhase] = useState(0);
 
-  // Auto-advance phases
-  useState(() => {
+  useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 1800);
     const t2 = setTimeout(() => setPhase(2), 3400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  });
+  }, []);
 
   return (
     <motion.div
