@@ -2,17 +2,46 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import HomeScreen from "@/components/HomeScreen";
 import LiveScanner from "@/components/LiveScanner";
+import ContextQuestions from "@/components/ContextQuestions";
 import AnalyzingSteps from "@/components/AnalyzingSteps";
 import DiagnosisResults from "@/components/DiagnosisResults";
 import GuidedFixMode from "@/components/GuidedFixMode";
 import ProVideoCall from "@/components/ProVideoCall";
 
-type Step = "home" | "scanner" | "analyzing" | "results" | "guided" | "pro";
+type Step = "home" | "scanner" | "context" | "analyzing" | "results" | "guided" | "pro";
+
+const DRYER_QUESTIONS = [
+  {
+    id: "brand",
+    question: "What brand is your dryer?",
+    type: "select" as const,
+    options: ["Samsung", "LG", "Whirlpool", "Not sure"],
+  },
+  {
+    id: "spinning",
+    question: "Is the drum still spinning when you turn it on?",
+    type: "select" as const,
+    options: [
+      "Yes, it spins but no heat",
+      "No, it's completely dead",
+      "It makes a weird grinding noise",
+    ],
+  },
+];
 
 const Index = () => {
   const [step, setStep] = useState<Step>("home");
+  const [symptomText, setSymptomText] = useState("");
 
-  const handleStartOver = () => setStep("home");
+  const handleStartOver = () => {
+    setStep("home");
+    setSymptomText("");
+  };
+
+  const handleTextSubmit = (text: string) => {
+    setSymptomText(text);
+    setStep("context");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,13 +61,26 @@ const Index = () => {
 
       <AnimatePresence mode="wait">
         {step === "home" && (
-          <HomeScreen key="home" onScan={() => setStep("scanner")} />
+          <HomeScreen
+            key="home"
+            onScan={() => setStep("scanner")}
+            onTextSubmit={handleTextSubmit}
+          />
         )}
         {step === "scanner" && (
           <LiveScanner
             key="scanner"
             onAnalyze={() => setStep("analyzing")}
             onBack={handleStartOver}
+          />
+        )}
+        {step === "context" && (
+          <ContextQuestions
+            key="context"
+            questions={DRYER_QUESTIONS}
+            symptom={symptomText}
+            onComplete={() => setStep("analyzing")}
+            onBack={() => setStep("home")}
           />
         )}
         {step === "analyzing" && (
