@@ -350,7 +350,7 @@ const TransitionScreen = ({ onStart }: { onStart: () => void }) => {
 
 const InstructionStep = ({ title, description, tip }: { title: string; description: string; tip: string }) => (
   <div>
-    <h2 className="font-heading text-2xl text-foreground mb-4">{title}</h2>
+    <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-4 break-words">{title}</h2>
     <div className="relative rounded-2xl bg-muted/50 h-48 mb-6 overflow-hidden flex items-center justify-center">
       <div className="text-center text-muted-foreground">
         <Wrench className="h-10 w-10 mx-auto mb-2 text-accent" />
