@@ -67,10 +67,9 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
             </div>
             <div>
               <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> 15 mins</span>
-                <span>Parts: ~$12</span>
-              </div>
+              <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5" /> Takes ~15 mins · Parts: $12 · Tools: Screwdriver, Multimeter
+              </p>
             </div>
           </div>
           <button
