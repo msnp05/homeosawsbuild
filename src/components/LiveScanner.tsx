@@ -174,10 +174,24 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       </div>
 
       {/* Confidence Bar */}
-      <div className="px-4 pb-2">
+      <motion.div
+        key={hapticPulse}
+        initial={hapticPulse > 0 ? { scale: 1.06 } : false}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+        className="px-4 pb-2"
+      >
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs text-primary-foreground/60 font-medium">{currentStageLabel}</span>
-          <span className="text-xs text-primary-foreground/80 font-bold">{confidence}%</span>
+          <motion.span
+            key={`pct-${hapticPulse}`}
+            initial={hapticPulse > 0 ? { scale: 1.3 } : false}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 12 }}
+            className="text-xs text-primary-foreground/80 font-bold"
+          >
+            {confidence}%
+          </motion.span>
         </div>
         <div className="relative h-2 w-full rounded-full bg-card/20 overflow-hidden">
           <motion.div
@@ -187,7 +201,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
             transition={{ duration: 0.3, ease: "easeOut" }}
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Viewfinder area */}
       <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-hidden min-h-0">
