@@ -215,16 +215,5 @@ const DiagnosticReasoning = () => {
   );
 };
 
-const CauseBar = ({ label, pct }: { label: string; pct: number }) => (
-  <div>
-    <div className="flex justify-between text-sm mb-1">
-      <span className="text-foreground">{label}</span>
-      <span className="text-muted-foreground">{pct}%</span>
-    </div>
-    <div className="h-2 bg-muted rounded-full overflow-hidden">
-      <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
-    </div>
-  </div>
-);
 
 export default DiagnosisResults;
