@@ -15,7 +15,7 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pb-32"
+      className="pb-32 overflow-x-hidden"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
         {/* Success banner */}
