@@ -180,6 +180,64 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
         </AnimatePresence>
       </div>
 
+      {/* SOS Button — visible on active repair steps */}
+      {prepPhase === null && current.content !== "done" && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowSOS(true)}
+          className="fixed top-4 right-4 z-30 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
+        >
+          <LifeBuoy className="h-4 w-4 text-destructive" />
+          <span className="text-xs font-semibold text-destructive">Stuck? Call a Pro</span>
+        </motion.button>
+      )}
+
+      {/* SOS Bottom Sheet */}
+      <AnimatePresence>
+        {showSOS && (
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300 }}
+            className="fixed inset-x-0 bottom-0 z-50 bg-card rounded-t-3xl shadow-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]"
+          >
+            <div className="w-12 h-1 rounded-full bg-muted mx-auto mb-4" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <LifeBuoy className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-lg text-foreground">Don't worry, we've got you.</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-5 break-words">
+              We'll pass your current step and diagnostic data to a Master Tech. They'll jump on video and talk you through this exact step.
+            </p>
+            <div className="space-y-3">
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setShowSOS(false);
+                  onProCall?.();
+                }}
+                className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-semibold text-base touch-manipulation"
+              >
+                Video Call Pro — $15
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setShowSOS(false)}
+                className="w-full h-14 rounded-2xl bg-secondary text-secondary-foreground font-semibold text-base touch-manipulation"
+              >
+                Nevermind, I'll keep trying
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Bottom nav — only for repair steps */}
       {prepPhase === null && current.content !== "done" && (
         <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
