@@ -86,6 +86,8 @@ export interface ContextQuestion {
   question: string;
   type: "select" | "text";
   options?: string[];
+  condition?: { id: string; value: string };
+  helperText?: string;
 }
 
 export const BINARY_QUESTIONS: Record<Category, { id: string; question: string }[]> = {

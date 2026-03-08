@@ -2,20 +2,33 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, ShoppingCart, Unplug, Wrench,
-  PartyPopper, ExternalLink, Check, Package
+  PartyPopper, Check, Package, Zap, AlertCircle, Info,
 } from "lucide-react";
 
 interface GuidedFixModeProps {
+  answers?: Record<string, string>;
   onBack: () => void;
   onStartOver: () => void;
 }
 
-type PrepPhase = "inventory" | "cart" | "transitioning" | null;
+type PrepPhase = "testing" | "inventory" | "cart" | "transitioning" | null;
 
 const TOOLS = [
   { id: "screwdriver", label: "Phillips Screwdriver", price: 5.0 },
   { id: "nutdriver", label: '1/4-inch Nut Driver', price: 5.0 },
   { id: "multimeter", label: "Digital Multimeter", price: 9.99 },
+];
+
+const ELECTRIC_PARTS = [
+  { id: "thermal_fuse", label: "Thermal Fuse Kit (DC47-00016A + DC96-00887C)", price: 14.99, testLabel: "Test Thermal Fuse", testHint: "If open (no beep) = bad, order replacement" },
+  { id: "heating_element", label: "Heating Element (DC47-00023A)", price: 34.99, testLabel: "Test Heating Element", testHint: "If open (no beep) = bad, order replacement" },
+  { id: "cycling_thermostat", label: "Cycling Thermostat (DC47-00018A)", price: 12.99, testLabel: "Test Cycling Thermostat", testHint: "If open (no beep) = bad, order replacement" },
+];
+
+const GAS_PARTS = [
+  { id: "gas_coils", label: "Gas Valve Coil Kit (279834)", price: 18.99, testLabel: "Test Gas Valve Coils", testHint: "If resistance is off-spec = bad" },
+  { id: "igniter", label: "Flat Igniter (279311)", price: 22.99, testLabel: "Test Igniter", testHint: "If no glow or cracked = bad" },
+  { id: "flame_sensor", label: "Flame Sensor (338906)", price: 8.99, testLabel: "Test Flame Sensor", testHint: "If open circuit = bad" },
 ];
 
 const REPAIR_STEPS = [
@@ -26,10 +39,23 @@ const REPAIR_STEPS = [
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
-const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
-  const [prepPhase, setPrepPhase] = useState<PrepPhase>("inventory");
+const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps) => {
+  const isGas = answers.fuel_type === "Gas (I see a gas line)";
+  const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
+
+  const [prepPhase, setPrepPhase] = useState<PrepPhase>("testing");
+  const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
   const [step, setStep] = useState(0);
+
+  const toggleFailedPart = (id: string) => {
+    setFailedParts((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const toggleTool = (id: string) => {
     setOwnedTools((prev) => {
@@ -40,17 +66,22 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
     });
   };
 
+  // Cart parts: failed parts, or default to first part if none selected
+  const cartParts = useMemo(() => {
+    if (failedParts.size === 0) return [PARTS[0]];
+    return PARTS.filter((p) => failedParts.has(p.id));
+  }, [failedParts, PARTS]);
+
   const cartTotal = useMemo(() => {
-    let total = 12.80; // fuse kit always
+    let total = cartParts.reduce((sum, p) => sum + p.price, 0);
     TOOLS.forEach((t) => {
       if (!ownedTools.has(t.id)) total += t.price;
     });
     return total;
-  }, [ownedTools]);
+  }, [cartParts, ownedTools]);
 
   const missingTools = TOOLS.filter((t) => !ownedTools.has(t.id));
 
-  // Repair step navigation
   const current = REPAIR_STEPS[step];
   const next = () => setStep((s) => Math.min(s + 1, REPAIR_STEPS.length - 1));
   const prev = () => {
@@ -58,9 +89,13 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
     else setStep((s) => s - 1);
   };
 
-  // Progress: prep phases count as 0-2, repair steps start at 3
-  const totalSteps = 3 + REPAIR_STEPS.length;
-  const currentProgress = prepPhase === "inventory" ? 1 : prepPhase === "cart" ? 2 : prepPhase === "transitioning" ? 3 : 3 + step + 1;
+  const totalSteps = 4 + REPAIR_STEPS.length;
+  const currentProgress =
+    prepPhase === "testing" ? 1 :
+    prepPhase === "inventory" ? 2 :
+    prepPhase === "cart" ? 3 :
+    prepPhase === "transitioning" ? 4 :
+    4 + step + 1;
 
   return (
     <motion.div
@@ -85,18 +120,30 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
       {/* Content */}
       <div className="flex-1 container mx-auto px-4 py-6 max-w-lg pb-36">
         <AnimatePresence mode="wait">
+          {prepPhase === "testing" && (
+            <ContinuityTest
+              key="testing"
+              parts={PARTS}
+              failedParts={failedParts}
+              onToggle={toggleFailedPart}
+              onNext={() => setPrepPhase("inventory")}
+              onSkip={() => setPrepPhase("inventory")}
+              onBack={onBack}
+            />
+          )}
           {prepPhase === "inventory" && (
             <InventoryCheck
               key="inventory"
               ownedTools={ownedTools}
               onToggle={toggleTool}
               onNext={() => setPrepPhase("cart")}
-              onBack={onBack}
+              onBack={() => setPrepPhase("testing")}
             />
           )}
           {prepPhase === "cart" && (
             <SmartCart
               key="cart"
+              cartParts={cartParts}
               missingTools={missingTools}
               total={cartTotal}
               onOrder={() => setPrepPhase("transitioning")}
@@ -124,7 +171,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
               {current.content === "panel" && <InstructionStep title="Step 2 of 4: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
               {current.content === "replace" && <InstructionStep title="Step 3 of 4: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece near the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting so you remember the placement." />}
               {current.content === "test" && <InstructionStep title="Step 4 of 4: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
-              {current.content === "done" && <CompletionScreen onStartOver={onStartOver} />}
+              {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -151,6 +198,103 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
     </motion.div>
   );
 };
+
+/* =================== CONTINUITY TEST =================== */
+
+const ContinuityTest = ({
+  parts,
+  failedParts,
+  onToggle,
+  onNext,
+  onSkip,
+  onBack,
+}: {
+  parts: typeof ELECTRIC_PARTS;
+  failedParts: Set<string>;
+  onToggle: (id: string) => void;
+  onNext: () => void;
+  onSkip: () => void;
+  onBack: () => void;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, x: 30 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -30 }}
+    transition={{ duration: 0.25 }}
+  >
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">
+      Test first. Order only what's broken.
+    </h2>
+    <p className="text-muted-foreground mb-6 break-words">
+      Set your multimeter to continuity mode (🔊). Touch both leads to each part below. No beep = bad part.
+    </p>
+
+    <div className="space-y-3 mb-6">
+      {parts.map((part, i) => {
+        const failed = failedParts.has(part.id);
+        return (
+          <motion.button
+            key={part.id}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => onToggle(part.id)}
+            className={`w-full min-h-[72px] rounded-2xl p-4 flex items-center gap-4 border-2 transition-colors touch-manipulation ${
+              failed
+                ? "border-destructive bg-destructive/10"
+                : "border-border bg-card"
+            }`}
+          >
+            <div className={`h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              failed ? "bg-destructive/20" : "bg-muted"
+            }`}>
+              {failed ? (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <AlertCircle className="h-5 w-5 text-destructive" />
+                </motion.div>
+              ) : (
+                <Zap className="h-5 w-5 text-muted-foreground" />
+              )}
+            </div>
+            <div className="text-left flex-1 min-w-0">
+              <span className="text-foreground font-medium text-base block">{part.testLabel}</span>
+              <span className="text-xs text-muted-foreground break-words">{part.testHint}</span>
+            </div>
+            {failed && (
+              <span className="text-xs font-semibold text-destructive bg-destructive/10 rounded-full px-2 py-0.5 flex-shrink-0">
+                Failed
+              </span>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
+
+    <div className="rounded-xl bg-muted/50 border border-border/50 p-3 mb-32">
+      <div className="flex gap-2">
+        <Info className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-muted-foreground break-words">
+          Not sure how to test? Skip this step — we'll include the most likely part by default.
+        </p>
+      </div>
+    </div>
+
+    {/* Sticky bottom */}
+    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
+      <button
+        onClick={onBack}
+        className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
+      >
+        <ArrowLeft className="h-5 w-5 text-foreground" />
+      </button>
+      <button
+        onClick={failedParts.size > 0 ? onNext : onSkip}
+        className="flex-1 h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+      >
+        {failedParts.size > 0 ? `Next — ${failedParts.size} part${failedParts.size > 1 ? "s" : ""} failed` : "Skip — use default"}
+        <ArrowRight className="h-5 w-5" />
+      </button>
+    </div>
+  </motion.div>
+);
 
 /* =================== PREP PHASE SCREENS =================== */
 
@@ -225,11 +369,13 @@ const InventoryCheck = ({
 );
 
 const SmartCart = ({
+  cartParts,
   missingTools,
   total,
   onOrder,
   onBack,
 }: {
+  cartParts: { id: string; label: string; price: number }[];
   missingTools: typeof TOOLS;
   total: number;
   onOrder: () => void;
@@ -245,8 +391,10 @@ const SmartCart = ({
     <p className="text-muted-foreground mb-6">Everything ships with Prime.</p>
 
     <div className="glass-card rounded-2xl p-5 space-y-4 mb-32">
-      {/* Always-present fuse kit */}
-      <CartItem label="Samsung Thermal Fuse Kit" price="$12.80" required />
+      {/* Dynamic parts from test results */}
+      {cartParts.map((p) => (
+        <CartItem key={p.id} label={p.label} price={`$${p.price.toFixed(2)}`} required />
+      ))}
 
       {/* Conditional missing tools */}
       {missingTools.map((t) => (
@@ -285,13 +433,13 @@ const SmartCart = ({
 
 const CartItem = ({ label, price, required }: { label: string; price: string; required?: boolean }) => (
   <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 min-w-0">
       <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
         {required ? <ShoppingCart className="h-4 w-4 text-muted-foreground" /> : <Wrench className="h-4 w-4 text-muted-foreground" />}
       </div>
-      <span className="text-foreground text-sm font-medium">{label}</span>
+      <span className="text-foreground text-sm font-medium break-words">{label}</span>
     </div>
-    <span className="text-accent font-bold">{price}</span>
+    <span className="text-accent font-bold flex-shrink-0 ml-2">{price}</span>
   </div>
 );
 
@@ -346,7 +494,7 @@ const TransitionScreen = ({ onStart }: { onStart: () => void }) => {
   );
 };
 
-/* =================== EXISTING REPAIR SCREENS (preserved) =================== */
+/* =================== REPAIR SCREENS =================== */
 
 const InstructionStep = ({ title, description, tip }: { title: string; description: string; tip: string }) => (
   <div>
@@ -371,34 +519,37 @@ const InstructionStep = ({ title, description, tip }: { title: string; descripti
   </div>
 );
 
-const CompletionScreen = ({ onStartOver }: { onStartOver: () => void }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
-  >
+const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: number }[]; onStartOver: () => void }) => {
+  const partsTotal = cartParts.reduce((s, p) => s + p.price, 0);
+  return (
     <motion.div
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-      className="h-20 w-20 rounded-full bg-success/15 flex items-center justify-center mb-6"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
     >
-      <PartyPopper className="h-10 w-10 text-success" />
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+        className="h-20 w-20 rounded-full bg-success/15 flex items-center justify-center mb-6"
+      >
+        <PartyPopper className="h-10 w-10 text-success" />
+      </motion.div>
+      <h2 className="font-heading text-3xl text-foreground mb-2">You did it! 🎉</h2>
+      <p className="text-lg text-muted-foreground mb-2">
+        You just saved <span className="text-success font-bold">~$185</span> on a repair tech.
+      </p>
+      <p className="text-sm text-muted-foreground mb-8">
+        Total cost: ${partsTotal.toFixed(2)} for parts + 15 minutes of your time.
+      </p>
+      <button
+        onClick={onStartOver}
+        className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"
+      >
+        Back to Home
+      </button>
     </motion.div>
-    <h2 className="font-heading text-3xl text-foreground mb-2">You did it! 🎉</h2>
-    <p className="text-lg text-muted-foreground mb-2">
-      You just saved <span className="text-success font-bold">~$185</span> on a repair tech.
-    </p>
-    <p className="text-sm text-muted-foreground mb-8">
-      Total cost: $12.80 for the part + 15 minutes of your time.
-    </p>
-    <button
-      onClick={onStartOver}
-      className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"
-    >
-      Back to Home
-    </button>
-  </motion.div>
-);
+  );
+};
 
 export default GuidedFixMode;
