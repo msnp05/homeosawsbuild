@@ -65,7 +65,7 @@ const LiveScanner = ({ onAnalyze, onBack }: LiveScannerProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-foreground/95 flex flex-col"
+      className="fixed inset-0 z-50 bg-foreground/95 flex flex-col h-[100dvh] overflow-hidden"
     >
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-4 pt-4 pb-2">
