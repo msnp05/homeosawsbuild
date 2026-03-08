@@ -176,11 +176,11 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
             {current.question}
           </h3>
           {isInferred && (
-            <p className="text-sm text-muted-foreground mb-4 flex items-center gap-1.5">
-              <Check className="h-3.5 w-3.5 text-accent" />
-              We detected{" "}
+            <p className="text-sm text-muted-foreground mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <Check className="h-3.5 w-3.5 text-accent flex-shrink-0" />
+              <span>We detected{" "}
               <span className="font-medium text-foreground">{inferred[current.id]}</span>{" "}
-              — tap to change
+              — tap to change</span>
             </p>
           )}
 

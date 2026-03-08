@@ -15,7 +15,7 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pb-32"
+      className="pb-32 overflow-x-hidden"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
         {/* Success banner */}
@@ -31,7 +31,7 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
               <h2 className="font-heading text-2xl text-foreground mb-1">
                 Good news: We know exactly what's wrong.
               </h2>
-              <p className="text-foreground/80 text-base font-medium">
+              <p className="text-foreground/80 text-base font-medium break-words">
                 Most likely: <span className="text-foreground font-semibold">Blown Thermal Fuse</span>
               </p>
             </div>
@@ -67,8 +67,8 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
             </div>
             <div>
               <h3 className="text-foreground font-semibold text-lg">I'll fix it myself</h3>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5" /> Takes ~15 mins · Parts: $12 · Tools: Screwdriver, Multimeter
+              <p className="text-sm text-muted-foreground flex items-start gap-1">
+                <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" /> <span className="break-words">Takes ~15 mins · Parts: $12 · Tools: Screwdriver, Multimeter</span>
               </p>
             </div>
           </div>

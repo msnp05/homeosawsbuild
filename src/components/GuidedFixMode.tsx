@@ -171,7 +171,7 @@ const InventoryCheck = ({
     exit={{ opacity: 0, x: -30 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="font-heading text-3xl text-foreground mb-2">Do you have these tools at home?</h2>
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Do you have these tools at home?</h2>
     <p className="text-muted-foreground mb-6">Tap the ones you already own.</p>
 
     <div className="space-y-3 mb-32">
@@ -241,7 +241,7 @@ const SmartCart = ({
     exit={{ opacity: 0, x: -30 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="font-heading text-3xl text-foreground mb-2">Let's get what you're missing.</h2>
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Let's get what you're missing.</h2>
     <p className="text-muted-foreground mb-6">Everything ships with Prime.</p>
 
     <div className="glass-card rounded-2xl p-5 space-y-4 mb-32">
@@ -350,7 +350,7 @@ const TransitionScreen = ({ onStart }: { onStart: () => void }) => {
 
 const InstructionStep = ({ title, description, tip }: { title: string; description: string; tip: string }) => (
   <div>
-    <h2 className="font-heading text-2xl text-foreground mb-4">{title}</h2>
+    <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-4 break-words">{title}</h2>
     <div className="relative rounded-2xl bg-muted/50 h-48 mb-6 overflow-hidden flex items-center justify-center">
       <div className="text-center text-muted-foreground">
         <Wrench className="h-10 w-10 mx-auto mb-2 text-accent" />
@@ -364,7 +364,7 @@ const InstructionStep = ({ title, description, tip }: { title: string; descripti
         <ArrowRight className="h-4 w-4 text-accent-foreground -rotate-90" />
       </motion.div>
     </div>
-    <p className="text-foreground text-base leading-relaxed mb-4">{description}</p>
+    <p className="text-foreground text-sm sm:text-base leading-relaxed mb-4 break-words">{description}</p>
     <div className="rounded-xl bg-warning/10 border border-warning/20 p-4">
       <p className="text-sm text-foreground"><span className="font-semibold">💡 Tip:</span> {tip}</p>
     </div>
