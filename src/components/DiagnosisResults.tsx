@@ -10,6 +10,7 @@ interface DiagnosisResultsProps {
   onGuidedFix: () => void;
   onProCall: () => void;
   onStartOver: () => void;
+  isLowConfidence?: boolean;
 }
 
 const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver }: DiagnosisResultsProps) => {
