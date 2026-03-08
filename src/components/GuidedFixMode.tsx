@@ -41,7 +41,7 @@ const REPAIR_STEPS = [
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
-const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps) => {
+const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedFixModeProps) => {
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
 
@@ -49,6 +49,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver }: GuidedFixModeProps
   const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
   const [step, setStep] = useState(0);
+  const [showSOS, setShowSOS] = useState(false);
 
   const toggleFailedPart = (id: string) => {
     setFailedParts((prev) => {
