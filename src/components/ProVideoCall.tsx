@@ -47,7 +47,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
           </motion.p>
 
           {/* Cancel */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 flex justify-center">
+          <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] flex justify-center">
             <button
               onClick={onBack}
               className="h-16 w-16 rounded-full bg-danger flex items-center justify-center touch-manipulation"
