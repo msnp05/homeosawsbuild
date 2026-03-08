@@ -28,7 +28,7 @@ const HomeScreen = ({ onScan, onTextSubmit }: HomeScreenProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col items-center justify-center min-h-[calc(100vh-60px)] px-4 sm:px-6 overflow-x-hidden"
+      className="flex flex-col items-center justify-center min-h-[calc(100dvh-60px)] px-4 sm:px-6 overflow-x-hidden max-w-full"
     >
       {/* Greeting */}
       <motion.div

@@ -259,7 +259,7 @@ const SmartCart = ({
     </div>
 
     {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-card/90 backdrop-blur-md">
+    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md">
       <div className="flex justify-between items-center mb-3 px-1">
         <span className="text-muted-foreground text-sm">Total</span>
         <span className="text-foreground font-bold text-xl">${total.toFixed(2)}</span>

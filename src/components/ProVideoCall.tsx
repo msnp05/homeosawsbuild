@@ -96,7 +96,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
           </motion.div>
 
           {/* Call controls */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-foreground/90 backdrop-blur-md">
+          <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-foreground/90 backdrop-blur-md">
             <div className="flex items-center justify-center gap-6">
               <button className="h-14 w-14 rounded-full bg-card/15 flex items-center justify-center touch-manipulation">
                 <Mic className="h-6 w-6 text-primary-foreground" />

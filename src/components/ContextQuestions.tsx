@@ -123,7 +123,7 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col items-center justify-start min-h-[calc(100vh-60px)] px-4 pt-8 pb-24"
+      className="flex flex-col items-center justify-start min-h-[calc(100dvh-60px)] px-4 pt-8 pb-24 overflow-x-hidden max-w-full"
     >
       <div className="w-full max-w-md">
         {/* Back button */}

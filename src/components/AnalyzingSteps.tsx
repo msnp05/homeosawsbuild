@@ -41,7 +41,7 @@ const AnalyzingSteps = ({ onComplete }: AnalyzingStepsProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center min-h-[calc(100vh-60px)] px-6"
+      className="flex flex-col items-center justify-center min-h-[calc(100dvh-60px)] px-6 overflow-x-hidden max-w-full"
     >
       <div className="max-w-sm w-full space-y-6">
         {STEPS.map((step, i) => {
