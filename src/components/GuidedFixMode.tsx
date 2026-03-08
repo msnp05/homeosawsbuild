@@ -10,6 +10,7 @@ interface GuidedFixModeProps {
   answers?: Record<string, string>;
   onBack: () => void;
   onStartOver: () => void;
+  onProCall?: () => void;
 }
 
 type PrepPhase = "testing" | "inventory" | "cart" | "transitioning" | null;
