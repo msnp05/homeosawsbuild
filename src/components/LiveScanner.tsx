@@ -88,9 +88,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     return () => clearTimeout(t);
   }, [visibleWords, muted, paused]);
 
-  // Confidence progression
+  // Confidence progression — only after sticker done
   useEffect(() => {
-    if (paused) return;
+    if (paused || stickerPhase !== "done") return;
     const timers = [
       setTimeout(() => { setConfidenceStage(1); }, 2000),
       setTimeout(() => { setConfidenceStage(2); }, 5000),
