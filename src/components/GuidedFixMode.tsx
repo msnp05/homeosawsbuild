@@ -67,7 +67,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-[calc(100vh-60px)] flex flex-col"
+      className="min-h-[calc(100dvh-60px)] flex flex-col overflow-x-hidden max-w-full"
     >
       {/* Progress bar */}
       {prepPhase !== "transitioning" && (
