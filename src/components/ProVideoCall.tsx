@@ -20,7 +20,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-foreground flex flex-col"
+      className="fixed inset-0 z-50 bg-foreground flex flex-col h-[100dvh] overflow-hidden"
     >
       {state === "ringing" && (
         <div className="flex-1 flex flex-col items-center justify-center px-6">
