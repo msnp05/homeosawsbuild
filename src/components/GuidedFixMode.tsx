@@ -171,7 +171,7 @@ const InventoryCheck = ({
     exit={{ opacity: 0, x: -30 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="font-heading text-3xl text-foreground mb-2">Do you have these tools at home?</h2>
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Do you have these tools at home?</h2>
     <p className="text-muted-foreground mb-6">Tap the ones you already own.</p>
 
     <div className="space-y-3 mb-32">
