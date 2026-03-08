@@ -8,7 +8,7 @@ interface DiagnosisResultsProps {
 }
 
 const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResultsProps) => {
-  const [showCauses, setShowCauses] = useState(false);
+  
 
   return (
     <motion.div
@@ -104,31 +104,6 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
           </button>
         </motion.div>
 
-        {/* Why we think this — collapsed */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <button
-            onClick={() => setShowCauses(!showCauses)}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation w-full justify-center py-2"
-          >
-            <span>Why we think this</span>
-            <ChevronDown className={`h-4 w-4 transition-transform ${showCauses ? "rotate-180" : ""}`} />
-          </button>
-          {showCauses && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              className="mt-2 rounded-xl bg-muted/50 p-4 space-y-3"
-            >
-              <CauseBar label="Blown Thermal Fuse" pct={78} />
-              <CauseBar label="Broken Heating Element" pct={15} />
-              <CauseBar label="Faulty Thermostat" pct={7} />
-            </motion.div>
-          )}
-        </motion.div>
 
         {/* Start over */}
         <div className="text-center mt-6">
@@ -240,16 +215,5 @@ const DiagnosticReasoning = () => {
   );
 };
 
-const CauseBar = ({ label, pct }: { label: string; pct: number }) => (
-  <div>
-    <div className="flex justify-between text-sm mb-1">
-      <span className="text-foreground">{label}</span>
-      <span className="text-muted-foreground">{pct}%</span>
-    </div>
-    <div className="h-2 bg-muted rounded-full overflow-hidden">
-      <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
-    </div>
-  </div>
-);
 
 export default DiagnosisResults;
