@@ -1,11 +1,27 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Camera, Mic } from "lucide-react";
+import { Camera, Mic, Send } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface HomeScreenProps {
   onScan: () => void;
 }
 
 const HomeScreen = ({ onScan }: HomeScreenProps) => {
+  const [textInput, setTextInput] = useState("");
+
+  const handleScan = () => {
+    toast({
+      description: "🔒 Camera & mic are only used to diagnose your issue and are never stored.",
+    });
+    onScan();
+  };
+
+  const handleTextSubmit = () => {
+    if (!textInput.trim()) return;
+    handleScan();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -33,7 +49,7 @@ const HomeScreen = ({ onScan }: HomeScreenProps) => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3, duration: 0.5, type: "spring", stiffness: 200 }}
-        onClick={onScan}
+        onClick={handleScan}
         className="relative group touch-manipulation mb-8"
       >
         {/* Outer glow ring */}
@@ -53,7 +69,7 @@ const HomeScreen = ({ onScan }: HomeScreenProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className="text-center max-w-xs"
+        className="text-center max-w-xs mb-8"
       >
         <p className="text-foreground font-medium text-lg mb-1">Scan my appliance</p>
         <p className="text-muted-foreground text-sm">
@@ -61,11 +77,40 @@ const HomeScreen = ({ onScan }: HomeScreenProps) => {
         </p>
       </motion.div>
 
+      {/* Text fallback input */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
+        className="w-full max-w-sm"
+      >
+        <div className="relative">
+          <input
+            type="text"
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
+            placeholder="Or just type what's wrong (e.g., 'dryer won't heat')..."
+            className="w-full h-12 pl-4 pr-12 rounded-2xl bg-card/80 backdrop-blur-md border border-border/50 text-foreground text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all"
+          />
+          <button
+            onClick={handleTextSubmit}
+            disabled={!textInput.trim()}
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center touch-manipulation transition-colors hover:bg-accent/20 disabled:opacity-30"
+          >
+            <Send className="h-4 w-4 text-accent" />
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground/50 text-center mt-2">
+          Perfect for quiet environments 🤫
+        </p>
+      </motion.div>
+
       {/* Footer */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.9 }}
         className="absolute bottom-8 text-center"
       >
         <p className="text-xs text-muted-foreground/60">
