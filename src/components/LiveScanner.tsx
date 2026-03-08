@@ -88,9 +88,12 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     return () => timers.forEach(clearTimeout);
   }, [paused]);
 
-  // Animate confidence value
+  // Animate confidence value + haptic pulse on stage change
   useEffect(() => {
     if (confidenceStage === 0) return;
+    // Trigger haptic pulse
+    setHapticPulse((p) => p + 1);
+    if (navigator.vibrate) navigator.vibrate(30);
     // Stage 4 = after answering question
     const stageIdx = confidenceStage >= 4 ? 3 : confidenceStage - 1;
     const target = CONFIDENCE_STAGES[stageIdx].target;
