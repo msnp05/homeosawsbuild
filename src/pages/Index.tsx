@@ -134,6 +134,7 @@ const Index = () => {
             answers={diagnosticAnswers}
             onBack={() => setStep("results")}
             onStartOver={handleStartOver}
+            onProCall={() => setStep("pro")}
           />
         )}
         {step === "pro" && (
