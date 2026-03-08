@@ -83,7 +83,7 @@ const GuidedFixMode = ({ onBack, onStartOver }: GuidedFixModeProps) => {
       )}
 
       {/* Content */}
-      <div className="flex-1 container mx-auto px-4 py-6 max-w-lg">
+      <div className="flex-1 container mx-auto px-4 py-6 max-w-lg pb-36">
         <AnimatePresence mode="wait">
           {prepPhase === "inventory" && (
             <InventoryCheck
