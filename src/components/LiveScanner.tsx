@@ -80,9 +80,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     return () => clearInterval(interval);
   }, [paused]);
 
-  // Voice transcription word-by-word
+  // Voice transcription word-by-word — only after sticker done
   useEffect(() => {
-    if (muted || paused) return;
+    if (muted || paused || stickerPhase !== "done") return;
     if (visibleWords >= TRANSCRIPT_WORDS.length) return;
     const t = setTimeout(() => setVisibleWords((w) => w + 1), 1200);
     return () => clearTimeout(t);
