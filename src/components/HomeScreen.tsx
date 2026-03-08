@@ -5,9 +5,10 @@ import { toast } from "@/hooks/use-toast";
 
 interface HomeScreenProps {
   onScan: () => void;
+  onTextSubmit: (text: string) => void;
 }
 
-const HomeScreen = ({ onScan }: HomeScreenProps) => {
+const HomeScreen = ({ onScan, onTextSubmit }: HomeScreenProps) => {
   const [textInput, setTextInput] = useState("");
 
   const handleScan = () => {
@@ -19,7 +20,7 @@ const HomeScreen = ({ onScan }: HomeScreenProps) => {
 
   const handleTextSubmit = () => {
     if (!textInput.trim()) return;
-    handleScan();
+    onTextSubmit(textInput.trim());
   };
 
   return (
