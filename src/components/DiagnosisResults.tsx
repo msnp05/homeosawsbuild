@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
-import { CheckCircle2, Wrench, Video, Users, Clock, RotateCcw, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2, Wrench, Video, Users, Clock, RotateCcw, ChevronDown, Search, Sparkles } from "lucide-react";
 import { useState } from "react";
-
 interface DiagnosisResultsProps {
   onGuidedFix: () => void;
   onProCall: () => void;
@@ -44,13 +43,16 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-2 mb-8 px-1"
+          className="flex items-center gap-2 mb-6 px-1"
         >
           <Users className="h-4 w-4 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
             You're not alone. <span className="text-foreground font-medium">842 homeowners</span> fixed this exact dryer themselves.
           </p>
         </motion.div>
+
+        {/* AI Reasoning Card */}
+        <DiagnosticReasoning />
 
         {/* Card A: Fix it myself */}
         <motion.div
@@ -140,6 +142,101 @@ const DiagnosisResults = ({ onGuidedFix, onProCall, onStartOver }: DiagnosisResu
           </button>
         </div>
       </div>
+    </motion.div>
+  );
+};
+
+const REASONING_STEPS = [
+  { icon: CheckCircle2, color: "text-success", text: "Drum is spinning → Drive motor & belt are functioning." },
+  { icon: CheckCircle2, color: "text-success", text: "No heat detected → Power is active, but heating circuit is broken." },
+  { icon: Search, color: "text-accent", text: "Cross-referencing LG/Samsung service manuals..." },
+];
+
+const PROBABILITY_DATA = [
+  { label: "Thermal Fuse / Cut-off Blown", pct: 78, note: "Usually caused by lint buildup" },
+  { label: "Burned Out Heating Element", pct: 18 },
+  { label: "Thermistor Failure", pct: 4 },
+];
+
+const DiagnosticReasoning = () => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.35 }}
+      className="rounded-2xl bg-muted/60 backdrop-blur-md border border-border/50 p-5 mb-6"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-accent" />
+          <h4 className="text-sm font-semibold text-foreground">Diagnostic Reasoning</h4>
+        </div>
+        <span className="text-[10px] text-muted-foreground tracking-wide uppercase">Powered by AI</span>
+      </div>
+
+      {/* Condensed summary */}
+      <p className="text-sm text-muted-foreground mb-2">
+        Analyzed <span className="text-foreground font-medium">4 components</span>. Ruled out motor & belt.
+      </p>
+
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1.5 text-xs font-medium text-accent hover:text-accent/80 transition-colors touch-manipulation"
+      >
+        <span>{expanded ? "Hide" : "View Full Breakdown"}</span>
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden"
+          >
+            {/* Timeline steps */}
+            <div className="mt-4 space-y-0">
+              {REASONING_STEPS.map((step, i) => (
+                <div key={i} className="flex gap-3 relative">
+                  {i < REASONING_STEPS.length - 1 && (
+                    <div className="absolute left-[11px] top-6 bottom-0 w-px bg-border" />
+                  )}
+                  <step.icon className={`h-[22px] w-[22px] flex-shrink-0 mt-0.5 ${step.color}`} />
+                  <p className="text-sm text-foreground/80 pb-4 leading-relaxed">{step.text}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Probability bars */}
+            <div className="mt-2 pt-3 border-t border-border/50 space-y-3">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Failure Probability</p>
+              {PROBABILITY_DATA.map((item) => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-foreground">{item.label}</span>
+                    <span className="text-muted-foreground font-medium">{item.pct}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${item.pct}%` }}
+                      transition={{ duration: 0.6, delay: 0.1 }}
+                      className="h-full bg-accent rounded-full"
+                    />
+                  </div>
+                  {item.note && (
+                    <p className="text-xs text-muted-foreground mt-1 italic">{item.note}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
