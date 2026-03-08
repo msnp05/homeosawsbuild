@@ -48,6 +48,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
   const [confidenceStage, setConfidenceStage] = useState<ConfidenceStage>(0);
   const [confidence, setConfidence] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hapticPulse, setHapticPulse] = useState(0);
 
   // Clarifying question
   const [showQuestion, setShowQuestion] = useState(false);
