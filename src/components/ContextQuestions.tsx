@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, Info } from "lucide-react";
 import { ContextQuestion } from "@/lib/diagnostic-data";
 
 interface ContextQuestionsProps {
@@ -22,6 +22,9 @@ const KEYWORD_MATCHERS: Record<string, Record<string, string[]>> = {
     "No, it's completely dead": ["dead", "won't turn on", "no power"],
     "It makes a weird grinding noise": ["grinding", "grind", "noise"],
   },
+  fuel_type: {
+    "Gas (I see a gas line)": ["gas dryer", "gas line"],
+  },
   appliance: {
     "Washing machine": ["washer", "washing machine", "wash machine"],
     Dryer: ["dryer", "drier"],
@@ -36,23 +39,10 @@ const KEYWORD_MATCHERS: Record<string, Record<string, string[]>> = {
     Rattling: ["rattling", "rattle", "vibrat", "noisy", "noise", "loud", "sound"],
     "No sounds": [],
   },
-  location: {
-    Kitchen: ["kitchen", "sink", "faucet", "garbage disposal"],
-    Bathroom: ["bathroom", "bath", "shower", "toilet"],
-    Basement: ["basement"],
-    Outdoor: ["outdoor", "outside", "yard", "garden", "hose"],
-  },
-  system: {
-    "Central AC": ["central ac", "central air"],
-    "Heat pump": ["heat pump"],
-    Furnace: ["furnace", "heater"],
-    "Window unit": ["window unit", "window ac"],
-    "Mini-split": ["mini-split", "mini split", "ductless"],
-  },
-  severity: {
-    Emergency: ["emergency", "flood", "fire", "sparking", "gas leak"],
-  },
 };
+
+const isVisible = (q: ContextQuestion, currentAnswers: Record<string, string>) =>
+  !q.condition || currentAnswers[q.condition.id] === q.condition.value;
 
 function inferAnswers(symptom: string, questions: ContextQuestion[]): Record<string, string> {
   const lower = symptom.toLowerCase();
@@ -74,49 +64,69 @@ function inferAnswers(symptom: string, questions: ContextQuestion[]): Record<str
   return inferred;
 }
 
+/** Find next visible question index starting from fromIdx */
+function findNextVisible(questions: ContextQuestion[], fromIdx: number, answers: Record<string, string>): number {
+  for (let i = fromIdx; i < questions.length; i++) {
+    if (isVisible(questions[i], answers)) return i;
+  }
+  return -1;
+}
+
 const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: ContextQuestionsProps) => {
   const inferred = useMemo(() => inferAnswers(symptom, questions), [symptom, questions]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>(inferred);
   const autoAdvancedRef = useRef(false);
 
-  // Auto-advance past questions that were inferred, on mount
+  // Auto-advance past inferred questions on mount
   useEffect(() => {
     if (autoAdvancedRef.current) return;
     autoAdvancedRef.current = true;
-    const firstUnanswered = questions.findIndex((q) => !inferred[q.id]);
-    if (firstUnanswered > 0) {
-      setCurrentIdx(firstUnanswered);
-    } else if (firstUnanswered === -1 && questions.length > 0) {
-      onComplete(inferred);
+    const firstUnanswered = findNextVisible(
+      questions,
+      0,
+      inferred
+    );
+    // Within visible questions, find first one without an inferred answer
+    if (firstUnanswered >= 0) {
+      const first = questions.findIndex((q, i) => i >= firstUnanswered && isVisible(q, inferred) && !inferred[q.id]);
+      if (first > 0) {
+        setCurrentIdx(first);
+      } else if (first === -1 && questions.length > 0) {
+        onComplete(inferred);
+      }
     }
   }, []);
 
   const current = questions[currentIdx];
-  const progress = ((currentIdx + 1) / questions.length) * 100;
+  const visibleQuestions = questions.filter((q) => isVisible(q, answers));
+  const visibleIdx = current ? visibleQuestions.findIndex((q) => q.id === current.id) : 0;
+  const progress = visibleQuestions.length > 0 ? ((visibleIdx + 1) / visibleQuestions.length) * 100 : 0;
   const isInferred = current ? !!inferred[current.id] : false;
-  const remaining = questions.length - currentIdx;
+  const remaining = visibleQuestions.length - visibleIdx;
+
+  const advanceOrComplete = (nextAnswers: Record<string, string>) => {
+    const nextIdx = findNextVisible(questions, currentIdx + 1, nextAnswers);
+    if (nextIdx >= 0) {
+      setCurrentIdx(nextIdx);
+    } else {
+      onComplete(nextAnswers);
+    }
+  };
 
   const handleSelect = (value: string) => {
     const next = { ...answers, [current.id]: value };
     setAnswers(next);
-
-    if (currentIdx < questions.length - 1) {
-      setCurrentIdx((i) => i + 1);
-    } else {
-      onComplete(next);
-    }
+    advanceOrComplete(next);
   };
 
   const handleSkip = () => {
     const next = { ...answers, [current.id]: "skipped" };
     setAnswers(next);
-    if (currentIdx < questions.length - 1) {
-      setCurrentIdx((i) => i + 1);
-    } else {
-      onComplete(next);
-    }
+    advanceOrComplete(next);
   };
+
+  if (!current) return null;
 
   return (
     <motion.div
@@ -151,7 +161,9 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-muted-foreground mb-2">
-            <span>Question {currentIdx + 1} of {questions.length}</span>
+            <span>
+              Question {visibleIdx + 1} of {visibleQuestions.length}
+            </span>
           </div>
           <div className="h-1.5 rounded-full bg-muted overflow-hidden">
             <motion.div
@@ -175,12 +187,25 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
           <h3 className="font-heading text-xl sm:text-2xl text-foreground mb-2">
             {current.question}
           </h3>
+
+          {/* Helper text (e.g. breaker tip) */}
+          {current.helperText && (
+            <div className="rounded-xl bg-warning/10 border border-warning/20 p-4 mb-4">
+              <div className="flex gap-2">
+                <Info className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-foreground break-words whitespace-normal">{current.helperText}</p>
+              </div>
+            </div>
+          )}
+
           {isInferred && (
             <p className="text-sm text-muted-foreground mb-4 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
               <Check className="h-3.5 w-3.5 text-accent flex-shrink-0" />
-              <span>We detected{" "}
-              <span className="font-medium text-foreground">{inferred[current.id]}</span>{" "}
-              — tap to change</span>
+              <span>
+                We detected{" "}
+                <span className="font-medium text-foreground">{inferred[current.id]}</span> — tap to
+                change
+              </span>
             </p>
           )}
 
