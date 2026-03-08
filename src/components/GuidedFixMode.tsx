@@ -241,7 +241,7 @@ const SmartCart = ({
     exit={{ opacity: 0, x: -30 }}
     transition={{ duration: 0.25 }}
   >
-    <h2 className="font-heading text-3xl text-foreground mb-2">Let's get what you're missing.</h2>
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Let's get what you're missing.</h2>
     <p className="text-muted-foreground mb-6">Everything ships with Prime.</p>
 
     <div className="glass-card rounded-2xl p-5 space-y-4 mb-32">
