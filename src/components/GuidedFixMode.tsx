@@ -97,7 +97,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
     else setStep((s) => s - 1);
   };
 
-  const totalSteps = 4 + REPAIR_STEPS.length;
+  const totalSteps = 3 + REPAIR_STEPS.length;
   const currentProgress =
     prepPhase === "inventory" ? 1 :
     prepPhase === "cart" ? 2 :
