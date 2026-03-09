@@ -99,11 +99,10 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
 
   const totalSteps = 4 + REPAIR_STEPS.length;
   const currentProgress =
-    prepPhase === "testing" ? 1 :
-    prepPhase === "inventory" ? 2 :
-    prepPhase === "cart" ? 3 :
-    prepPhase === "transitioning" ? 4 :
-    4 + step + 1;
+    prepPhase === "inventory" ? 1 :
+    prepPhase === "cart" ? 2 :
+    prepPhase === "transitioning" ? 3 :
+    3 + step + 1;
 
   return (
     <motion.div
