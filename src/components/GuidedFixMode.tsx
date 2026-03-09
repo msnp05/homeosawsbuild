@@ -712,56 +712,34 @@ const TransitionScreen = ({ onStart }: { onStart: () => void }) => {
 
 /* =================== REPAIR SCREENS =================== */
 
-const InstructionStep = ({ title, description, tip }: { title: string; description: string; tip: string }) => (
+const InstructionStep = ({
+  title,
+  description,
+  tip,
+  visual,
+  sourceLabel = "Reference: OEM Service Manual",
+}: {
+  title: string;
+  description: string;
+  tip: string;
+  visual?: React.ReactNode;
+  sourceLabel?: string;
+}) => (
   <div>
     <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-4 break-words">{title}</h2>
-    <div className="relative rounded-2xl bg-muted/50 h-48 mb-6 overflow-hidden flex items-center justify-center">
-      <div className="text-center text-muted-foreground">
-        <Wrench className="h-10 w-10 mx-auto mb-2 text-accent" />
-        <p className="text-sm">AR Overlay</p>
+    <div className="relative rounded-2xl bg-muted/40 border border-border/50 mb-6 overflow-hidden">
+      <div className="min-h-[180px] flex items-center justify-center p-4">
+        {visual ?? <Wrench className="h-12 w-12 text-muted-foreground/30" />}
       </div>
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ repeat: Infinity, duration: 1.5 }}
-        className="absolute bottom-4 right-6 h-8 w-8 rounded-full bg-accent flex items-center justify-center shadow-lg"
-      >
-        <ArrowRight className="h-4 w-4 text-accent-foreground -rotate-90" />
-      </motion.div>
+      <div className="absolute bottom-2 right-3 flex items-center gap-1 bg-background/70 backdrop-blur-sm rounded-full px-2 py-0.5">
+        <span className="text-[9px] text-muted-foreground/60 font-medium">{sourceLabel}</span>
+      </div>
     </div>
     <p className="text-foreground text-sm sm:text-base leading-relaxed mb-4 break-words">{description}</p>
     <div className="rounded-xl bg-warning/10 border border-warning/20 p-4">
       <p className="text-sm text-foreground"><span className="font-semibold">💡 Tip:</span> {tip}</p>
     </div>
   </div>
-);
-
-const VerifyScreen = ({ onNext, onProCall }: { onNext: () => void; onProCall: () => void }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
-  >
-    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2">Run a test cycle now.</h2>
-    <p className="text-muted-foreground mb-8 break-words max-w-sm">
-      Start your dryer with a damp towel and let it run for 5 minutes. Is it heating up?
-    </p>
-    <div className="w-full max-w-sm space-y-3">
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={onNext}
-        className="w-full h-16 rounded-2xl bg-success text-success-foreground font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
-      >
-        ✅ Yes! It's heating!
-      </motion.button>
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={onProCall}
-        className="w-full h-16 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
-      >
-        ❌ Still not heating
-      </motion.button>
-    </div>
-  </motion.div>
 );
 
 const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { price: number }[]; onStartOver: () => void; onProCall?: () => void }) => {
