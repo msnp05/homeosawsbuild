@@ -209,6 +209,15 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       {/* SOS Bottom Sheet */}
       <AnimatePresence>
         {showSOS && (
+          <>
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowSOS(false)}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          />
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
