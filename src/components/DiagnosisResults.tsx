@@ -115,7 +115,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
         </motion.div>
 
         {/* AI Reasoning Card — only in high confidence */}
-        {!isLowConfidence && <DiagnosticReasoning isGas={isGas} />}
+        {!localLowConfidence && <DiagnosticReasoning isGas={isGas} />}
 
         {/* Card A: Fix it myself — hidden in low confidence */}
         {!isLowConfidence && (
