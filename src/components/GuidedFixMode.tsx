@@ -46,7 +46,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
 
-  const [prepPhase, setPrepPhase] = useState<PrepPhase>("testing");
+  const [prepPhase, setPrepPhase] = useState<PrepPhase>("inventory");
   const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
   const [step, setStep] = useState(0);
