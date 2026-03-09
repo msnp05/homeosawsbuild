@@ -279,38 +279,27 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
   );
 };
 
-/* =================== CONTINUITY TEST =================== */
+/* =================== CONTINUITY TEST INLINE =================== */
 
-const ContinuityTest = ({
+const ContinuityTestInline = ({
   parts,
   failedParts,
   onToggle,
-  onNext,
-  onSkip,
-  onBack,
 }: {
   parts: typeof ELECTRIC_PARTS;
   failedParts: Set<string>;
   onToggle: (id: string) => void;
-  onNext: () => void;
-  onSkip: () => void;
-  onBack: () => void;
 }) => (
-  <motion.div
-    initial={{ opacity: 0, x: 30 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -30 }}
-    transition={{ duration: 0.25 }}
-  >
-    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">
-      Test first. Order only what's broken.
+  <div>
+    <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-2 break-words">
+      Test before you replace.
     </h2>
-    <p className="text-muted-foreground mb-6 break-words">
-      Set your multimeter to continuity mode (🔊). Touch both leads to each part below. No beep = bad part.
+    <p className="text-muted-foreground text-sm mb-6 break-words">
+      The panel is open. Touch your multimeter leads to each part. No beep = bad. Tap to mark what failed.
     </p>
 
     <div className="space-y-3 mb-6">
-      {parts.map((part, i) => {
+      {parts.map((part) => {
         const failed = failedParts.has(part.id);
         return (
           <motion.button
@@ -348,32 +337,15 @@ const ContinuityTest = ({
       })}
     </div>
 
-    <div className="rounded-xl bg-muted/50 border border-border/50 p-3 mb-32">
+    <div className="rounded-xl bg-muted/50 border border-border/50 p-3">
       <div className="flex gap-2">
         <Info className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
         <p className="text-xs text-muted-foreground break-words">
-          Not sure how to test? Skip this step — we'll include the most likely part by default.
+          Already ordered the thermal fuse? It's fine to replace it regardless — it's the most likely culprit.
         </p>
       </div>
     </div>
-
-    {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
-      <button
-        onClick={onBack}
-        className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
-      >
-        <ArrowLeft className="h-5 w-5 text-foreground" />
-      </button>
-      <button
-        onClick={failedParts.size > 0 ? onNext : onSkip}
-        className="flex-1 h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
-      >
-        {failedParts.size > 0 ? `Next — ${failedParts.size} part${failedParts.size > 1 ? "s" : ""} failed` : "Skip — use default"}
-        <ArrowRight className="h-5 w-5" />
-      </button>
-    </div>
-  </motion.div>
+  </div>
 );
 
 /* =================== PREP PHASE SCREENS =================== */
