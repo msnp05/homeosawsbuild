@@ -38,7 +38,8 @@ const REPAIR_STEPS = [
   { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
   { title: "Step 3 of 5: Quick Test", icon: Zap, content: "continuity" },
   { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
-  { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Step 5 of 6: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Did that fix it?", icon: Check, content: "verify" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
