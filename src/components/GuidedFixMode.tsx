@@ -194,9 +194,25 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       exit={{ opacity: 0 }}
       className="min-h-[calc(100dvh-60px)] flex flex-col overflow-x-hidden max-w-full"
     >
-      {/* Progress bar */}
+      {/* Progress bar + SOS */}
       {prepPhase !== "transitioning" && (
         <div className="px-4 pt-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex-1" />
+            {prepPhase === null && current.content !== "done" && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowSOS(true)}
+                className="flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-1.5 touch-manipulation"
+              >
+                <LifeBuoy className="h-3.5 w-3.5 text-destructive" />
+                <span className="text-xs font-semibold text-destructive">Stuck?</span>
+              </motion.button>
+            )}
+          </div>
           <div className="h-1.5 bg-muted rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-accent rounded-full"
