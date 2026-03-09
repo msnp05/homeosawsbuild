@@ -295,7 +295,7 @@ const ContinuityTestInline = ({
       Test before you replace.
     </h2>
     <p className="text-muted-foreground text-sm mb-6 break-words">
-      The panel is open. Touch your multimeter leads to each part. No beep = bad. Tap to mark what failed.
+      The panel is open. Set your multimeter to continuity mode (🔊). Touch both leads to each part. No beep = bad. Tap to mark what failed.
     </p>
 
     <div className="space-y-3 mb-6">
