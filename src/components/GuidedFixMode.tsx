@@ -163,10 +163,21 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              {current.content === "unplug" && <InstructionStep title="Step 1 of 4: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
-              {current.content === "panel" && <InstructionStep title="Step 2 of 4: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
-              {current.content === "replace" && <InstructionStep title="Step 3 of 4: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece near the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting so you remember the placement." />}
-              {current.content === "test" && <InstructionStep title="Step 4 of 4: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
+              {current.content === "unplug" && <InstructionStep title="Step 1 of 5: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
+              {current.content === "panel" && <InstructionStep title="Step 2 of 5: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
+              {current.content === "continuity" && (
+                <ContinuityTest
+                  parts={PARTS}
+                  failedParts={failedParts}
+                  onToggle={toggleFailedPart}
+                  onNext={next}
+                  onSkip={next}
+                  onBack={prev}
+                />
+              )}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
               {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} />}
             </motion.div>
           )}

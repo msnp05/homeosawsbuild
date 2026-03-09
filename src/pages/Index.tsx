@@ -132,6 +132,7 @@ const Index = () => {
             onGuidedFix={() => setStep("guided")}
             onProCall={() => setStep("pro")}
             onStartOver={handleStartOver}
+            isLowConfidence={isLowConfidence}
           />
         )}
         {step === "guided" && (
