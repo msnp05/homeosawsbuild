@@ -16,6 +16,7 @@ interface DiagnosisResultsProps {
 
 const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence: isLowConfidenceProp = false }: DiagnosisResultsProps) => {
   const [localLowConfidence, setLocalLowConfidence] = useState(isLowConfidenceProp);
+  const [confirmReset, setConfirmReset] = useState(false);
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const ventDirty = answers.vent_cleaning === "It's been a while" || answers.vent_cleaning === "Never / Not sure";
   const topCause = isGas ? "Gas Valve Solenoid Coils" : "Blown Thermal Fuse";
