@@ -89,14 +89,14 @@ const Index = () => {
     setDiagnosticAnswers(answers);
     if (answers.breaker_result === "Yes, it's working now!") {
       setStep("fixed");
-    } else {
-      if (answers.spinning === "It makes a weird grinding noise") {
-        setIsLowConfidence(true);
-      } else {
-        setIsLowConfidence(false);
-      }
-      setStep("analyzing");
+      return;
     }
+    const isGrinding = answers.spinning === "It makes a weird grinding noise";
+    const isDead = answers.spinning === "No, it's completely dead";
+    if (isGrinding || isDead) {
+      setIsLowConfidence(true);
+    }
+    setStep("analyzing");
   };
 
   return (

@@ -163,7 +163,7 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
           <div className="inline-flex items-center gap-1.5 mb-4 bg-accent/10 rounded-full px-3 py-1.5">
             <Check className="h-3.5 w-3.5 text-accent" />
             <span className="text-xs font-medium text-accent">
-              ✨ {Object.keys(inferred).length} answers pre-filled from your description
+              {Object.keys(inferred).length} answer{Object.keys(inferred).length > 1 ? "s" : ""} pre-filled from your description
             </span>
           </div>
         )}

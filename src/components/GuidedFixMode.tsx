@@ -651,7 +651,7 @@ const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { 
 
       <button
         onClick={onStartOver}
-        className="w-full max-w-xs h-14 rounded-xl bg-accent text-accent-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
+        className="w-full max-w-xs h-14 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
       >
         Fix another appliance
       </button>
