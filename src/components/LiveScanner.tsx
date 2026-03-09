@@ -359,7 +359,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
           </div>
 
           {/* Panel B: Your Voice */}
-          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-2.5 py-1.5">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <AudioLines className="h-3.5 w-3.5 text-accent" />
