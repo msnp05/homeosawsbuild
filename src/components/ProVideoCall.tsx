@@ -84,7 +84,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mx-4 mb-4 rounded-2xl bg-card/95 backdrop-blur-xl p-5"
+            className="mx-4 mb-24 rounded-2xl bg-card/95 backdrop-blur-xl p-5"
           >
             <p className="text-sm font-semibold text-foreground mb-3">Context Shared with Mike</p>
             <div className="space-y-2">
