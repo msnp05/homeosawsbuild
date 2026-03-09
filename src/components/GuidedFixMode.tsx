@@ -5,6 +5,7 @@ import {
   PartyPopper, Check, Package, Zap, AlertCircle, Info,
   LifeBuoy, X as XIcon, AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface GuidedFixModeProps {
   answers?: Record<string, string>;

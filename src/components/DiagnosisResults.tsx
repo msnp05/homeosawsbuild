@@ -191,13 +191,38 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
 
         {/* Start over */}
         <div className="text-center mt-6">
-          <button
-            onClick={onStartOver}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Start over
-          </button>
+          {!confirmReset ? (
+            <button
+              onClick={() => setConfirmReset(true)}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+            >
+              <RotateCcw className="h-4 w-4" />
+              Start over
+            </button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl bg-card border border-border p-5 max-w-sm mx-auto"
+            >
+              <h4 className="font-heading text-lg text-foreground mb-1">Start over?</h4>
+              <p className="text-sm text-muted-foreground mb-4">You'll lose your current diagnosis.</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmReset(false)}
+                  className="flex-1 h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onStartOver}
+                  className="flex-1 h-14 rounded-xl bg-destructive text-destructive-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                >
+                  Yes, start over
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>
