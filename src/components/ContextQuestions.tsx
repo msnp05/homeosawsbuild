@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Info } from "lucide-react";
+import { ArrowLeft, Check, Info, Sparkles } from "lucide-react";
 import { ContextQuestion } from "@/lib/diagnostic-data";
 
 interface ContextQuestionsProps {
