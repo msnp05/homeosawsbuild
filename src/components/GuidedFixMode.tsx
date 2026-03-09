@@ -14,7 +14,7 @@ interface GuidedFixModeProps {
   onProCall?: () => void;
 }
 
-type PrepPhase = "testing" | "inventory" | "cart" | "transitioning" | null;
+type PrepPhase = "inventory" | "cart" | "transitioning" | null;
 
 const TOOLS = [
   { id: "screwdriver", label: "Phillips Screwdriver", price: 5.0 },
