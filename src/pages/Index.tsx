@@ -65,6 +65,13 @@ const Index = () => {
 
   const handleStartOver = () => {
     setStep("home");
+    setDiagnosticAnswers({});
+    setIsLowConfidence(false);
+    // NOTE: intentionally does NOT clear symptomText
+  };
+
+  const handleFullReset = () => {
+    setStep("home");
     setSymptomText("");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
