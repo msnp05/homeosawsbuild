@@ -286,17 +286,23 @@ const ContinuityTestInline = ({
   parts,
   failedParts,
   onToggle,
+  isGas,
 }: {
   parts: typeof ELECTRIC_PARTS;
   failedParts: Set<string>;
   onToggle: (id: string) => void;
+  isGas: boolean;
 }) => (
   <div>
     <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-2 break-words">
       Test before you replace.
     </h2>
     <p className="text-muted-foreground text-sm mb-6 break-words">
-      The panel is open. Set your multimeter to continuity mode (🔊). Touch both leads to each part. No beep = bad. Tap to mark what failed.
+      The panel is open.{" "}
+      {isGas
+        ? "Set your multimeter to Ohms (Ω). Check resistance on each part — see spec below."
+        : "Set your multimeter to continuity mode (🔊). Touch both leads to each part. No beep = bad."}
+      {" "}Tap to mark what failed.
     </p>
 
     <div className="space-y-3 mb-6">
