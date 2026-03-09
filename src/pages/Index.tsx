@@ -67,6 +67,7 @@ const Index = () => {
     setStep("home");
     setSymptomText("");
     setDiagnosticAnswers({});
+    setIsLowConfidence(false);
   };
 
   const HAZARD_KEYWORDS = [
