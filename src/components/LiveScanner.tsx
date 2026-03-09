@@ -78,7 +78,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       setMachineStatusIdx((p) => Math.min(p + 1, MACHINE_STATUSES.length - 1));
     }, 2000);
     return () => clearInterval(interval);
-  }, [paused]);
+  }, [paused, stickerPhase]);
 
   // Voice transcription word-by-word — only after sticker done
   useEffect(() => {
