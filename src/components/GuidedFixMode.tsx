@@ -255,6 +255,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               </motion.button>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
 
