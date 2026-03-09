@@ -246,8 +246,8 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              {current.content === "unplug" && <InstructionStep title="Step 1 of 5: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
-              {current.content === "panel" && <InstructionStep title="Step 2 of 5: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
+              {current.content === "unplug" && <InstructionStep title="Step 1 of 5: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve behind it." tip="Pull the dryer away from the wall gently — you may need a friend for heavy models." visual={<VisualUnplug />} />}
+              {current.content === "panel" && <InstructionStep title="Step 2 of 5: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel. Set it aside flat." tip="Keep the screws in a small bowl — they're tiny and easy to lose on a laundry room floor." visual={<VisualBackPanel />} />}
               {current.content === "continuity" && (
                 <ContinuityTestInline
                   parts={PARTS}
@@ -256,14 +256,42 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   isGas={isGas}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Replace the thermal fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one. Replace both pieces in the kit." tip="Take a photo of the wires before disconnecting — they only go back one way." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The coil pack is clipped onto the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and press the new kit into place." tip="The coils only align one way — you'll feel them click when seated correctly." />}
-              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
-              {current.content === "verify" && (
-                <VerifyScreen onNext={next} onProCall={() => {
-                  toast("Passing your repair data to a Master Tech...");
-                  onProCall?.();
-                }} />
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Replace the thermal fuse" description="The thermal fuse is the small white plastic block on the exhaust duct. Disconnect the two wires, pop out the old fuse, and snap in the new one. Replace both pieces in the kit." tip="Take a photo of the wires before disconnecting — they only reconnect one way." visual={<VisualReplaceFuse isGas={false} />} />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The coil pack is clipped onto the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and press the new kit into place." tip="The coils only align one way — you'll feel them click when seated correctly." visual={<VisualReplaceFuse isGas={true} />} />}
+              {current.content === "test" && (
+                <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+                  <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-4 break-words">Reassemble & Test</h2>
+                  <p className="text-muted-foreground mb-8 break-words max-w-sm">
+                    Screw the back panel on, plug it in, and run a cycle with a damp towel for 5 minutes. Is it heating up?
+                  </p>
+                  <div className="w-full max-w-sm space-y-3">
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={next}
+                      className="w-full h-16 rounded-2xl bg-success text-success-foreground font-bold text-base touch-manipulation flex items-center justify-center gap-2"
+                    >
+                      ✅ Yes! It's heating!
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => {
+                        toast("Passing your repair data to a Master Tech...");
+                        onProCall?.();
+                      }}
+                      className="w-full h-16 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
+                    >
+                      ❌ Still not heating
+                    </motion.button>
+                  </div>
+                  <div className="rounded-xl bg-warning/10 border border-warning/30 p-4 mt-8 w-full max-w-sm text-left">
+                    <div className="flex gap-2">
+                      <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-foreground break-words">
+                        <span className="font-semibold">Safety check:</span> Do not push the machine back against the wall until you confirm it works!
+                      </p>
+                    </div>
+                  </div>
+                </div>
               )}
               {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} onProCall={onProCall} />}
             </motion.div>
