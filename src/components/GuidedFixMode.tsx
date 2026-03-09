@@ -176,10 +176,16 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   onBack={prev}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
-              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
-              {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} />}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 6: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 6: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "test" && <InstructionStep title="Step 5 of 6: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
+              {current.content === "verify" && (
+                <VerifyScreen onNext={next} onProCall={() => {
+                  toast("Passing your repair data to a Master Tech...");
+                  onProCall?.();
+                }} />
+              )}
+              {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} onProCall={onProCall} />}
             </motion.div>
           )}
         </AnimatePresence>
