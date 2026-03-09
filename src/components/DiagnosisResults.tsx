@@ -33,15 +33,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       className="pb-32 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
-        {/* Demo toggle */}
-        <div className="flex justify-end mb-2">
-          <button
-            onClick={() => setLocalLowConfidence((v) => !v)}
-            className="text-[10px] text-muted-foreground/40 border border-muted rounded-full px-2 py-0.5 hover:text-muted-foreground/60 transition-colors"
-          >
-            Toggle: {localLowConfidence ? "Low" : "High"} Confidence
-          </button>
-        </div>
         {/* Success / Low Confidence banner */}
         {localLowConfidence ? (
           <motion.div
