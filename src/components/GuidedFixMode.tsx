@@ -192,7 +192,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
           transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSOS(true)}
-          className="fixed top-4 right-4 z-30 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
+          className="fixed top-16 right-4 z-40 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
         >
           <LifeBuoy className="h-4 w-4 text-destructive" />
           <span className="text-xs font-semibold text-destructive">Stuck? Call a Pro</span>
