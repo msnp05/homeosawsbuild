@@ -414,6 +414,11 @@ const ContinuityTestInline = ({
       {" "}Tap to mark what failed.
     </p>
 
+    <div className="rounded-2xl bg-muted/40 border border-border/50 mb-5 overflow-hidden p-3">
+      <VisualMultimeter isGas={isGas} />
+      <p className="text-[9px] text-muted-foreground/50 text-right mt-1 pr-1">Reference: OEM Service Manual</p>
+    </div>
+
     <div className="space-y-3 mb-6">
       {parts.map((part) => {
         const failed = failedParts.has(part.id);
@@ -442,6 +447,17 @@ const ContinuityTestInline = ({
             <div className="text-left flex-1 min-w-0">
               <span className="text-foreground font-medium text-base block">{part.testLabel}</span>
               <span className="text-xs text-muted-foreground break-words">{part.testHint}</span>
+              <a
+                href={`https://www.partselect.com/Models/${
+                  part.label.match(/\(([^)]+)\)/)?.[1]?.split("+")[0]?.trim() ?? ""
+                }.htm`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1 text-[10px] text-accent mt-1 touch-manipulation"
+              >
+                View part <ExternalLink className="h-2.5 w-2.5" />
+              </a>
             </div>
             {failed && (
               <span className="text-xs font-semibold text-destructive bg-destructive/10 rounded-full px-2 py-0.5 flex-shrink-0">
