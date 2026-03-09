@@ -398,7 +398,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       </div>
 
       {/* Bottom mute toggle */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md z-30">
+      <div className="fixed bottom-0 left-0 right-0 p-3 pb-[max(1rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md z-30">
         <div className="flex gap-3">
           <motion.button
             onClick={() => setMuted((m) => !m)}
