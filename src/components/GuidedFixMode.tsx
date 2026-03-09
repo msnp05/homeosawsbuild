@@ -34,10 +34,11 @@ const GAS_PARTS = [
 ];
 
 const REPAIR_STEPS = [
-  { title: "Step 1 of 4: Unplug the machine", icon: Unplug, content: "unplug" },
-  { title: "Step 2 of 4: Remove the back panel", icon: Wrench, content: "panel" },
-  { title: "Step 3 of 4: Locate & replace the fuse", icon: Wrench, content: "replace" },
-  { title: "Step 4 of 4: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Step 1 of 5: Unplug the machine", icon: Unplug, content: "unplug" },
+  { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
+  { title: "Step 3 of 5: Quick Test", icon: Zap, content: "continuity" },
+  { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
+  { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
@@ -45,7 +46,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
 
-  const [prepPhase, setPrepPhase] = useState<PrepPhase>("testing");
+  const [prepPhase, setPrepPhase] = useState<PrepPhase>("inventory");
   const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
   const [step, setStep] = useState(0);
@@ -96,13 +97,12 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
     else setStep((s) => s - 1);
   };
 
-  const totalSteps = 4 + REPAIR_STEPS.length;
+  const totalSteps = 3 + REPAIR_STEPS.length;
   const currentProgress =
-    prepPhase === "testing" ? 1 :
-    prepPhase === "inventory" ? 2 :
-    prepPhase === "cart" ? 3 :
-    prepPhase === "transitioning" ? 4 :
-    4 + step + 1;
+    prepPhase === "inventory" ? 1 :
+    prepPhase === "cart" ? 2 :
+    prepPhase === "transitioning" ? 3 :
+    3 + step + 1;
 
   return (
     <motion.div
@@ -127,24 +127,13 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       {/* Content */}
       <div className="flex-1 container mx-auto px-4 py-6 max-w-lg pb-36">
         <AnimatePresence mode="wait">
-          {prepPhase === "testing" && (
-            <ContinuityTest
-              key="testing"
-              parts={PARTS}
-              failedParts={failedParts}
-              onToggle={toggleFailedPart}
-              onNext={() => setPrepPhase("inventory")}
-              onSkip={() => setPrepPhase("inventory")}
-              onBack={onBack}
-            />
-          )}
           {prepPhase === "inventory" && (
             <InventoryCheck
               key="inventory"
               ownedTools={ownedTools}
               onToggle={toggleTool}
               onNext={() => setPrepPhase("cart")}
-              onBack={() => setPrepPhase("testing")}
+              onBack={onBack}
             />
           )}
           {prepPhase === "cart" && (
@@ -174,10 +163,21 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              {current.content === "unplug" && <InstructionStep title="Step 1 of 4: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
-              {current.content === "panel" && <InstructionStep title="Step 2 of 4: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
-              {current.content === "replace" && <InstructionStep title="Step 3 of 4: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece near the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting so you remember the placement." />}
-              {current.content === "test" && <InstructionStep title="Step 4 of 4: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
+              {current.content === "unplug" && <InstructionStep title="Step 1 of 5: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
+              {current.content === "panel" && <InstructionStep title="Step 2 of 5: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
+              {current.content === "continuity" && (
+                <ContinuityTest
+                  parts={PARTS}
+                  failedParts={failedParts}
+                  onToggle={toggleFailedPart}
+                  onNext={next}
+                  onSkip={next}
+                  onBack={prev}
+                />
+              )}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
               {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} />}
             </motion.div>
           )}

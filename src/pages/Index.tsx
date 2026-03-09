@@ -61,6 +61,7 @@ const Index = () => {
   const [step, setStep] = useState<Step>("home");
   const [symptomText, setSymptomText] = useState("");
   const [diagnosticAnswers, setDiagnosticAnswers] = useState<Record<string, string>>({});
+  const [isLowConfidence, setIsLowConfidence] = useState(false);
 
   const handleStartOver = () => {
     setStep("home");
@@ -78,6 +79,11 @@ const Index = () => {
     if (answers.breaker_result === "Yes, it's working now!") {
       setStep("fixed");
     } else {
+      if (answers.spinning === "It makes a weird grinding noise") {
+        setIsLowConfidence(true);
+      } else {
+        setIsLowConfidence(false);
+      }
       setStep("analyzing");
     }
   };
@@ -102,7 +108,7 @@ const Index = () => {
           <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} />
         )}
         {step === "scanner" && (
-          <LiveScanner key="scanner" onAnalyze={() => setStep("analyzing")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
+          <LiveScanner key="scanner" onAnalyze={() => setStep("context")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
         )}
         {step === "context" && (
           <ContextQuestions
@@ -126,6 +132,7 @@ const Index = () => {
             onGuidedFix={() => setStep("guided")}
             onProCall={() => setStep("pro")}
             onStartOver={handleStartOver}
+            isLowConfidence={isLowConfidence}
           />
         )}
         {step === "guided" && (

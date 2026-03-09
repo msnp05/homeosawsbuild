@@ -13,7 +13,8 @@ interface DiagnosisResultsProps {
   isLowConfidence?: boolean;
 }
 
-const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence = false }: DiagnosisResultsProps) => {
+const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence: isLowConfidenceProp = false }: DiagnosisResultsProps) => {
+  const [localLowConfidence, setLocalLowConfidence] = useState(isLowConfidenceProp);
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const ventDirty = answers.vent_cleaning === "It's been a while" || answers.vent_cleaning === "Never / Not sure";
   const topCause = isGas ? "Gas Valve Solenoid Coils" : "Blown Thermal Fuse";
@@ -30,8 +31,17 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       className="pb-32 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
+        {/* Demo toggle */}
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={() => setLocalLowConfidence((v) => !v)}
+            className="text-[10px] text-muted-foreground/40 border border-muted rounded-full px-2 py-0.5 hover:text-muted-foreground/60 transition-colors"
+          >
+            Toggle: {localLowConfidence ? "Low" : "High"} Confidence
+          </button>
+        </div>
         {/* Success / Low Confidence banner */}
-        {isLowConfidence ? (
+        {localLowConfidence ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,10 +115,10 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
         </motion.div>
 
         {/* AI Reasoning Card — only in high confidence */}
-        {!isLowConfidence && <DiagnosticReasoning isGas={isGas} />}
+        {!localLowConfidence && <DiagnosticReasoning isGas={isGas} />}
 
         {/* Card A: Fix it myself — hidden in low confidence */}
-        {!isLowConfidence && (
+        {!localLowConfidence && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -146,8 +156,8 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: isLowConfidence ? 0.2 : 0.5 }}
-          className={`glass-card rounded-2xl p-5 mb-6 ${isLowConfidence ? "border-2 border-primary/30" : ""}`}
+          transition={{ delay: localLowConfidence ? 0.2 : 0.5 }}
+          className={`glass-card rounded-2xl p-5 mb-6 ${localLowConfidence ? "border-2 border-primary/30" : ""}`}
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -155,16 +165,16 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             </div>
             <div>
               <h3 className="text-foreground font-semibold text-lg">
-                {isLowConfidence ? "Talk to a certified tech" : "I'd rather talk to a pro"}
+                {localLowConfidence ? "Talk to a certified tech" : "I'd rather talk to a pro"}
               </h3>
               <p className="text-sm text-muted-foreground">
-                {isLowConfidence
+                {localLowConfidence
                   ? "A pro will review your audio/video data live."
                   : "Video call a certified tech right now."}
               </p>
             </div>
           </div>
-          {isLowConfidence && (
+          {localLowConfidence && (
             <p className="text-sm text-muted-foreground mb-4 break-words">
               Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
             </p>
