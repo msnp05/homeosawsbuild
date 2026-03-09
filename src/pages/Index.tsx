@@ -69,8 +69,19 @@ const Index = () => {
     setDiagnosticAnswers({});
   };
 
+  const HAZARD_KEYWORDS = [
+    "burning", "smoke", "sparks", "spark", "bang", "explosion",
+    "fire", "flames", "smell gas", "gas smell", "shocked", "shock",
+    "arc", "melting", "melted", "scorch", "hot to touch"
+  ];
+
   const handleTextSubmit = (text: string) => {
     setSymptomText(text);
+    const lower = text.toLowerCase();
+    const isHazard = HAZARD_KEYWORDS.some((kw) => lower.includes(kw));
+    if (isHazard) {
+      setIsLowConfidence(true);
+    }
     setStep("context");
   };
 
@@ -78,14 +89,14 @@ const Index = () => {
     setDiagnosticAnswers(answers);
     if (answers.breaker_result === "Yes, it's working now!") {
       setStep("fixed");
-    } else {
-      if (answers.spinning === "It makes a weird grinding noise") {
-        setIsLowConfidence(true);
-      } else {
-        setIsLowConfidence(false);
-      }
-      setStep("analyzing");
+      return;
     }
+    const isGrinding = answers.spinning === "It makes a weird grinding noise";
+    const isDead = answers.spinning === "No, it's completely dead";
+    if (isGrinding || isDead) {
+      setIsLowConfidence(true);
+    }
+    setStep("analyzing");
   };
 
   return (

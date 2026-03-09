@@ -38,9 +38,9 @@ const REPAIR_STEPS = [
   { title: "Step 1 of 5: Unplug the machine", icon: Unplug, content: "unplug" },
   { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
   { title: "Step 3 of 5: Test before you replace", icon: Zap, content: "continuity" },
-  { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
+  { title: "Step 4 of 5: Locate & replace", icon: Wrench, content: "replace" },
   { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
-  { title: "Did that fix it?", icon: Check, content: "verify" },
+  { title: "", icon: Check, content: "verify" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
@@ -172,10 +172,11 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   parts={PARTS}
                   failedParts={failedParts}
                   onToggle={toggleFailedPart}
+                  isGas={isGas}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Replace the thermal fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one. Replace both pieces in the kit." tip="Take a photo of the wires before disconnecting — they only go back one way." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The coil pack is clipped onto the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and press the new kit into place." tip="The coils only align one way — you'll feel them click when seated correctly." />}
               {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
               {current.content === "verify" && (
                 <VerifyScreen onNext={next} onProCall={() => {
@@ -197,7 +198,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
           transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSOS(true)}
-          className="fixed top-16 right-4 z-40 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
+          className="fixed top-[72px] right-4 z-40 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
         >
           <LifeBuoy className="h-4 w-4 text-destructive" />
           <span className="text-xs font-semibold text-destructive">Stuck? Call a Pro</span>
@@ -285,17 +286,23 @@ const ContinuityTestInline = ({
   parts,
   failedParts,
   onToggle,
+  isGas,
 }: {
   parts: typeof ELECTRIC_PARTS;
   failedParts: Set<string>;
   onToggle: (id: string) => void;
+  isGas: boolean;
 }) => (
   <div>
     <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-2 break-words">
       Test before you replace.
     </h2>
     <p className="text-muted-foreground text-sm mb-6 break-words">
-      The panel is open. Touch your multimeter leads to each part. No beep = bad. Tap to mark what failed.
+      The panel is open.{" "}
+      {isGas
+        ? "Set your multimeter to Ohms (Ω). Check resistance on each part — see spec below."
+        : "Set your multimeter to continuity mode (🔊). Touch both leads to each part. No beep = bad."}
+      {" "}Tap to mark what failed.
     </p>
 
     <div className="space-y-3 mb-6">
@@ -651,7 +658,7 @@ const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { 
 
       <button
         onClick={onStartOver}
-        className="w-full max-w-xs h-14 rounded-xl bg-accent text-accent-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
+        className="w-full max-w-xs h-14 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
       >
         Fix another appliance
       </button>
