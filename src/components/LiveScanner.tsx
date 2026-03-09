@@ -86,7 +86,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     if (visibleWords >= TRANSCRIPT_WORDS.length) return;
     const t = setTimeout(() => setVisibleWords((w) => w + 1), 1200);
     return () => clearTimeout(t);
-  }, [visibleWords, muted, paused]);
+  }, [visibleWords, muted, paused, stickerPhase]);
 
   // Confidence progression — only after sticker done
   useEffect(() => {
