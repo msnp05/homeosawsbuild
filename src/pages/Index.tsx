@@ -139,7 +139,7 @@ const Index = () => {
           />
         )}
         {step === "fixed" && (
-          <FixedCelebration key="fixed" onStartOver={handleStartOver} />
+          <FixedCelebration key="fixed" onStartOver={handleFullReset} />
         )}
         {step === "analyzing" && (
           <AnalyzingSteps key="analyzing" onComplete={() => setStep("results")} />
