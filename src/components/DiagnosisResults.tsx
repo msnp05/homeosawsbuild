@@ -189,7 +189,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
             >
               <RotateCcw className="h-4 w-4" />
-              Start over
+              Change my answers
             </button>
           ) : (
             <motion.div
