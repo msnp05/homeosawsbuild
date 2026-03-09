@@ -98,7 +98,7 @@ const VisualReplaceFuse = ({ isGas }: { isGas: boolean }) => (
 );
 
 const VisualMultimeter = ({ isGas }: { isGas: boolean }) => (
-  <svg viewBox="0 0 280 165" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 280 180" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="15" y="15" width="90" height="135" rx="10" className="fill-muted/80 stroke-border" strokeWidth="2"/>
     <rect x="24" y="25" width="72" height="35" rx="4" className="fill-background stroke-border/50" strokeWidth="1"/>
     <text x="36" y="48" className="fill-success" fontSize="18" fontFamily="monospace" fontWeight="bold">
