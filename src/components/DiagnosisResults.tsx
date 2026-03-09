@@ -4,6 +4,7 @@ import {
   ChevronDown, Search, Sparkles, AlertTriangle, Info,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface DiagnosisResultsProps {
   answers?: Record<string, string>;
