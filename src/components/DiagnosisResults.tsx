@@ -15,7 +15,7 @@ interface DiagnosisResultsProps {
 }
 
 const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence: isLowConfidenceProp = false }: DiagnosisResultsProps) => {
-  const [localLowConfidence, setLocalLowConfidence] = useState(isLowConfidenceProp);
+  const localLowConfidence = isLowConfidenceProp;
   const [confirmReset, setConfirmReset] = useState(false);
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const ventDirty = answers.vent_cleaning === "It's been a while" || answers.vent_cleaning === "Never / Not sure";
@@ -33,15 +33,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       className="pb-32 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
-        {/* Demo toggle */}
-        <div className="flex justify-end mb-2">
-          <button
-            onClick={() => setLocalLowConfidence((v) => !v)}
-            className="text-[10px] text-muted-foreground/40 border border-muted rounded-full px-2 py-0.5 hover:text-muted-foreground/60 transition-colors"
-          >
-            Toggle: {localLowConfidence ? "Low" : "High"} Confidence
-          </button>
-        </div>
         {/* Success / Low Confidence banner */}
         {localLowConfidence ? (
           <motion.div
@@ -198,7 +189,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
             >
               <RotateCcw className="h-4 w-4" />
-              Start over
+              Change my answers
             </button>
           ) : (
             <motion.div
@@ -206,8 +197,8 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl bg-card border border-border p-5 max-w-sm mx-auto"
             >
-              <h4 className="font-heading text-lg text-foreground mb-1">Start over?</h4>
-              <p className="text-sm text-muted-foreground mb-4">You'll lose your current diagnosis.</p>
+              <h4 className="font-heading text-lg text-foreground mb-1">Change my answers?</h4>
+              <p className="text-sm text-muted-foreground mb-4">We'll go back to the first question. Your original description is saved.</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmReset(false)}
@@ -217,9 +208,9 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
                 </button>
                 <button
                   onClick={onStartOver}
-                  className="flex-1 h-14 rounded-xl bg-destructive text-destructive-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                  className="flex-1 h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
                 >
-                  Yes, start over
+                  Yes, go back
                 </button>
               </div>
             </motion.div>

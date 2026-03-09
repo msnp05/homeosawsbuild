@@ -65,6 +65,13 @@ const Index = () => {
 
   const handleStartOver = () => {
     setStep("home");
+    setDiagnosticAnswers({});
+    setIsLowConfidence(false);
+    // NOTE: intentionally does NOT clear symptomText
+  };
+
+  const handleFullReset = () => {
+    setStep("home");
     setSymptomText("");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
@@ -117,7 +124,7 @@ const Index = () => {
 
       <AnimatePresence mode="wait">
         {step === "home" && (
-          <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} />
+          <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} initialSymptom={symptomText} />
         )}
         {step === "scanner" && (
           <LiveScanner key="scanner" onAnalyze={() => setStep("context")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
@@ -132,7 +139,7 @@ const Index = () => {
           />
         )}
         {step === "fixed" && (
-          <FixedCelebration key="fixed" onStartOver={handleStartOver} />
+          <FixedCelebration key="fixed" onStartOver={handleFullReset} />
         )}
         {step === "analyzing" && (
           <AnalyzingSteps key="analyzing" onComplete={() => setStep("results")} />
@@ -152,7 +159,7 @@ const Index = () => {
             key="guided"
             answers={diagnosticAnswers}
             onBack={() => setStep("results")}
-            onStartOver={handleStartOver}
+            onStartOver={handleFullReset}
             onProCall={() => setStep("pro")}
           />
         )}
