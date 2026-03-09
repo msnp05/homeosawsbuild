@@ -34,10 +34,11 @@ const GAS_PARTS = [
 ];
 
 const REPAIR_STEPS = [
-  { title: "Step 1 of 4: Unplug the machine", icon: Unplug, content: "unplug" },
-  { title: "Step 2 of 4: Remove the back panel", icon: Wrench, content: "panel" },
-  { title: "Step 3 of 4: Locate & replace the fuse", icon: Wrench, content: "replace" },
-  { title: "Step 4 of 4: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Step 1 of 5: Unplug the machine", icon: Unplug, content: "unplug" },
+  { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
+  { title: "Step 3 of 5: Quick Test", icon: Zap, content: "continuity" },
+  { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
+  { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
