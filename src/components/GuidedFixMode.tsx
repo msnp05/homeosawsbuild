@@ -174,8 +174,8 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   onToggle={toggleFailedPart}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Replace the thermal fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one. Replace both pieces in the kit." tip="Take a photo of the wires before disconnecting — they only go back one way." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The coil pack is clipped onto the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and press the new kit into place." tip="The coils only align one way — you'll feel them click when seated correctly." />}
               {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
               {current.content === "verify" && (
                 <VerifyScreen onNext={next} onProCall={() => {
