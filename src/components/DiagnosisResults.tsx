@@ -71,12 +71,13 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
               <div>
-                <h2 className="font-heading text-2xl text-foreground mb-1">
+              <h2 className="font-heading text-2xl text-foreground mb-1">
                   Good news: We know exactly what's wrong.
                 </h2>
-                <p className="text-foreground/80 text-base font-medium break-words">
-                  Most likely: <span className="text-foreground font-semibold">{topCause}</span>
-                </p>
+                <p className="font-heading text-3xl sm:text-4xl text-foreground font-bold mt-2 mb-1 break-words">{topCause}</p>
+                <div className="inline-flex items-center gap-1.5 mt-2 bg-success/20 rounded-full px-3 py-1">
+                  <span className="text-sm font-bold text-success">91% Confident</span>
+                </div>
               </div>
             </div>
           </motion.div>
