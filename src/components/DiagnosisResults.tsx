@@ -168,7 +168,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
                 {localLowConfidence ? "Talk to a certified tech" : "I'd rather talk to a pro"}
               </h3>
               <p className="text-sm text-muted-foreground">
-                {isLowConfidence
+                {localLowConfidence
                   ? "A pro will review your audio/video data live."
                   : "Video call a certified tech right now."}
               </p>
