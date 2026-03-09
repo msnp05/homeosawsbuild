@@ -321,7 +321,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
               <Activity className="h-3.5 w-3.5 text-accent" />
               <span className="text-[10px] font-semibold text-primary-foreground/80 uppercase tracking-wide">Listening to your dryer...</span>
             </div>
-            <div className="flex items-center justify-center gap-[2px] h-6 mb-1">
+            <div className="flex items-center justify-center gap-[2px] h-5 mb-1">
               {Array.from({ length: 20 }).map((_, i) => (
                 <motion.div
                   key={i}
