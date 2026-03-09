@@ -156,8 +156,8 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: isLowConfidence ? 0.2 : 0.5 }}
-          className={`glass-card rounded-2xl p-5 mb-6 ${isLowConfidence ? "border-2 border-primary/30" : ""}`}
+          transition={{ delay: localLowConfidence ? 0.2 : 0.5 }}
+          className={`glass-card rounded-2xl p-5 mb-6 ${localLowConfidence ? "border-2 border-primary/30" : ""}`}
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
