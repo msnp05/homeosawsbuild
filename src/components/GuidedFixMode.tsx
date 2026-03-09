@@ -601,8 +601,52 @@ const InstructionStep = ({ title, description, tip }: { title: string; descripti
   </div>
 );
 
-const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: number }[]; onStartOver: () => void }) => {
+const VerifyScreen = ({ onNext, onProCall }: { onNext: () => void; onProCall: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
+  >
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2">Run a test cycle now.</h2>
+    <p className="text-muted-foreground mb-8 break-words max-w-sm">
+      Start your dryer with a damp towel and let it run for 5 minutes. Is it heating up?
+    </p>
+    <div className="w-full max-w-sm space-y-3">
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={onNext}
+        className="w-full h-16 rounded-2xl bg-success text-success-foreground font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
+      >
+        ✅ Yes! It's heating!
+      </motion.button>
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={onProCall}
+        className="w-full h-16 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
+      >
+        ❌ Still not heating
+      </motion.button>
+    </div>
+  </motion.div>
+);
+
+const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { price: number }[]; onStartOver: () => void; onProCall?: () => void }) => {
   const partsTotal = cartParts.reduce((s, p) => s + p.price, 0);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'I just fixed my dryer with HomeOS!',
+          text: 'Saved $185 in 15 minutes.',
+          url: 'https://homeos.app',
+        });
+      } catch {}
+    } else {
+      toast("Link copied to clipboard!");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -637,10 +681,20 @@ const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: numb
 
       <button
         onClick={onStartOver}
-        className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"
+        className="w-full max-w-xs h-14 rounded-xl bg-accent text-accent-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
       >
-        Back to Home
+        Fix another appliance
       </button>
+
+      <div className="w-full max-w-xs">
+        <p className="text-xs text-muted-foreground mb-2">💬 Know someone with the same problem?</p>
+        <button
+          onClick={handleShare}
+          className="w-full h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+        >
+          Share this fix
+        </button>
+      </div>
     </motion.div>
   );
 };
