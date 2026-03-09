@@ -97,7 +97,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       setTimeout(() => { setConfidenceStage(3); }, 8000),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [paused]);
+  }, [paused, stickerPhase]);
 
   // Animate confidence value + haptic pulse on stage change
   useEffect(() => {
