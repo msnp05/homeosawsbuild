@@ -127,24 +127,13 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       {/* Content */}
       <div className="flex-1 container mx-auto px-4 py-6 max-w-lg pb-36">
         <AnimatePresence mode="wait">
-          {prepPhase === "testing" && (
-            <ContinuityTest
-              key="testing"
-              parts={PARTS}
-              failedParts={failedParts}
-              onToggle={toggleFailedPart}
-              onNext={() => setPrepPhase("inventory")}
-              onSkip={() => setPrepPhase("inventory")}
-              onBack={onBack}
-            />
-          )}
           {prepPhase === "inventory" && (
             <InventoryCheck
               key="inventory"
               ownedTools={ownedTools}
               onToggle={toggleTool}
               onNext={() => setPrepPhase("cart")}
-              onBack={() => setPrepPhase("testing")}
+              onBack={onBack}
             />
           )}
           {prepPhase === "cart" && (
