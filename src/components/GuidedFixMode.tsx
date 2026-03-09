@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, ArrowRight, ShoppingCart, Unplug, Wrench,
   PartyPopper, Check, Package, Zap, AlertCircle, Info,
-  LifeBuoy, X as XIcon, AlertTriangle,
+  LifeBuoy, X as XIcon, AlertTriangle, ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 
