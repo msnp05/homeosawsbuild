@@ -40,9 +40,90 @@ const REPAIR_STEPS = [
   { title: "Step 3 of 5: Test before you replace", icon: Zap, content: "continuity" },
   { title: "Step 4 of 5: Locate & replace", icon: Wrench, content: "replace" },
   { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
-  { title: "", icon: Check, content: "verify" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
+
+/* =================== SVG ILLUSTRATIONS =================== */
+
+const VisualUnplug = () => (
+  <svg viewBox="0 0 280 160" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="160" y="30" width="80" height="100" rx="8" className="fill-muted stroke-border" strokeWidth="2"/>
+    <rect x="180" y="55" width="8" height="18" rx="2" className="fill-muted-foreground/40"/>
+    <rect x="196" y="55" width="8" height="18" rx="2" className="fill-muted-foreground/40"/>
+    <circle cx="200" cy="95" r="6" className="fill-muted-foreground/40"/>
+    <rect x="172" y="45" width="56" height="70" rx="4" className="stroke-border fill-transparent" strokeWidth="1.5"/>
+    <rect x="60" y="55" width="60" height="50" rx="6" className="fill-accent/20 stroke-accent" strokeWidth="2"/>
+    <rect x="75" y="42" width="6" height="16" rx="2" className="fill-accent/60"/>
+    <rect x="90" y="42" width="6" height="16" rx="2" className="fill-accent/60"/>
+    <circle cx="90" cy="95" r="5" className="fill-accent/60"/>
+    <path d="M 125 80 L 155 80" className="stroke-foreground/30" strokeWidth="2" strokeDasharray="4 3"/>
+    <path d="M 150 74 L 160 80 L 150 86" className="stroke-accent" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <text x="62" y="125" className="fill-muted-foreground" fontSize="9" fontFamily="system-ui">240V 4-prong</text>
+    <text x="165" y="142" className="fill-muted-foreground" fontSize="9" fontFamily="system-ui">Wall outlet</text>
+  </svg>
+);
+
+const VisualBackPanel = () => (
+  <svg viewBox="0 0 280 160" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="40" y="20" width="200" height="125" rx="4" className="fill-muted/60 stroke-border" strokeWidth="2"/>
+    <circle cx="140" cy="82" r="28" className="fill-muted stroke-border" strokeWidth="1.5"/>
+    <circle cx="140" cy="82" r="20" className="fill-background/50 stroke-border/50" strokeWidth="1"/>
+    {[[55,35],[225,35],[55,130],[225,130],[55,82],[225,82]].map(([cx,cy],i) => (
+      <g key={i}>
+        <circle cx={cx} cy={cy} r="7" className="fill-muted stroke-accent" strokeWidth="1.5"/>
+        <line x1={cx-3} y1={cy} x2={cx+3} y2={cy} className="stroke-accent" strokeWidth="1.5"/>
+        <line x1={cx} y1={cy-3} x2={cx} y2={cy+3} className="stroke-accent" strokeWidth="1.5"/>
+      </g>
+    ))}
+    <text x="100" y="155" className="fill-muted-foreground" fontSize="9" fontFamily="system-ui">Remove 6 screws — #2 Phillips</text>
+  </svg>
+);
+
+const VisualReplaceFuse = ({ isGas }: { isGas: boolean }) => (
+  <svg viewBox="0 0 280 160" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="30" y="60" width="160" height="45" rx="4" className="fill-muted/60 stroke-border" strokeWidth="2"/>
+    <text x="60" y="88" className="fill-muted-foreground" fontSize="10" fontFamily="system-ui">Exhaust duct</text>
+    <rect x="195" y="70" width="55" height="26" rx="4" className="fill-accent/20 stroke-accent" strokeWidth="2"/>
+    <text x="199" y="83" className="fill-accent" fontSize="8" fontFamily="system-ui" fontWeight="600">
+      {isGas ? "Coil pack" : "Thermal fuse"}
+    </text>
+    <text x="199" y="93" className="fill-accent/70" fontSize="7" fontFamily="system-ui">White plastic</text>
+    <line x1="195" y1="80" x2="190" y2="80" className="stroke-foreground/40" strokeWidth="2"/>
+    <line x1="195" y1="87" x2="190" y2="87" className="stroke-foreground/40" strokeWidth="2"/>
+    <path d="M 178 83 L 192 83" className="stroke-destructive" strokeWidth="2"/>
+    <path d="M 186 78 L 193 83 L 186 88" className="stroke-destructive" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="30" y="118" width="165" height="22" rx="4" className="fill-warning/10 stroke-warning/30" strokeWidth="1"/>
+    <text x="42" y="131" className="fill-warning" fontSize="8.5" fontFamily="system-ui">📷 Photo the wires before disconnecting</text>
+  </svg>
+);
+
+const VisualMultimeter = ({ isGas }: { isGas: boolean }) => (
+  <svg viewBox="0 0 280 165" className="w-full max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="15" y="15" width="90" height="135" rx="10" className="fill-muted/80 stroke-border" strokeWidth="2"/>
+    <rect x="24" y="25" width="72" height="35" rx="4" className="fill-background stroke-border/50" strokeWidth="1"/>
+    <text x="36" y="48" className="fill-success" fontSize="18" fontFamily="monospace" fontWeight="bold">
+      {isGas ? "0.52" : "----"}
+    </text>
+    <circle cx="60" cy="100" r="22" className="fill-background stroke-border" strokeWidth="1.5"/>
+    <text x="51" y="97" className="fill-foreground" fontSize="8" fontFamily="system-ui">{isGas ? "Ω" : "🔊"}</text>
+    <text x="46" y="107" className="fill-accent" fontSize="7" fontFamily="system-ui">← set here</text>
+    <circle cx="45" cy="140" r="4" className="fill-destructive"/>
+    <circle cx="75" cy="140" r="4" className="fill-foreground/60"/>
+    <path d="M 45 144 Q 45 165 120 155 Q 185 148 220 95" className="stroke-destructive" strokeWidth="2" strokeDasharray="5 3" fill="none"/>
+    <path d="M 75 144 Q 75 168 140 162 Q 200 158 230 110" className="stroke-foreground/50" strokeWidth="2" strokeDasharray="5 3" fill="none"/>
+    <rect x="205" y="75" width="55" height="28" rx="5" className="fill-accent/15 stroke-accent" strokeWidth="2"/>
+    <text x="210" y="88" className="fill-accent" fontSize="8" fontFamily="system-ui" fontWeight="600">
+      {isGas ? "Gas coil" : "Thermal fuse"}
+    </text>
+    <text x="210" y="98" className="fill-muted-foreground" fontSize="7" fontFamily="system-ui">touch both leads</text>
+    <circle cx="213" cy="76" r="3.5" className="fill-destructive"/>
+    <circle cx="248" cy="76" r="3.5" className="fill-foreground/50"/>
+    <rect x="15" y="155" width="250" height="18" rx="3" className="fill-muted/50"/>
+    <text x="22" y="167" className="fill-success" fontSize="8" fontFamily="system-ui">
+      {isGas ? "✓ In spec = good   ✗ Off-spec = replace" : "✓ Beep = good   ✗ No beep = replace"}
+    </text>
+  </svg>
+);
 
 const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedFixModeProps) => {
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
