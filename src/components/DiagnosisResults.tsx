@@ -174,7 +174,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               </p>
             </div>
           </div>
-          {isLowConfidence && (
+          {localLowConfidence && (
             <p className="text-sm text-muted-foreground mb-4 break-words">
               Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
             </p>
