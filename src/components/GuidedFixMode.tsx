@@ -172,6 +172,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   parts={PARTS}
                   failedParts={failedParts}
                   onToggle={toggleFailedPart}
+                  isGas={isGas}
                 />
               )}
               {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Replace the thermal fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one. Replace both pieces in the kit." tip="Take a photo of the wires before disconnecting — they only go back one way." />}
