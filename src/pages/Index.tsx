@@ -124,7 +124,7 @@ const Index = () => {
 
       <AnimatePresence mode="wait">
         {step === "home" && (
-          <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} />
+          <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} initialSymptom={symptomText} />
         )}
         {step === "scanner" && (
           <LiveScanner key="scanner" onAnalyze={() => setStep("context")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
