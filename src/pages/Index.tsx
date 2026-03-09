@@ -108,7 +108,7 @@ const Index = () => {
           <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} />
         )}
         {step === "scanner" && (
-          <LiveScanner key="scanner" onAnalyze={() => setStep("analyzing")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
+          <LiveScanner key="scanner" onAnalyze={() => setStep("context")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
         )}
         {step === "context" && (
           <ContextQuestions
