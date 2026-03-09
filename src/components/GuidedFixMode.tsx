@@ -14,7 +14,7 @@ interface GuidedFixModeProps {
   onProCall?: () => void;
 }
 
-type PrepPhase = "testing" | "inventory" | "cart" | "transitioning" | null;
+type PrepPhase = "inventory" | "cart" | "transitioning" | null;
 
 const TOOLS = [
   { id: "screwdriver", label: "Phillips Screwdriver", price: 5.0 },
@@ -35,11 +35,11 @@ const GAS_PARTS = [
 ];
 
 const REPAIR_STEPS = [
-  { title: "Step 1 of 6: Unplug the machine", icon: Unplug, content: "unplug" },
-  { title: "Step 2 of 6: Remove the back panel", icon: Wrench, content: "panel" },
-  { title: "Step 3 of 6: Quick Test", icon: Zap, content: "continuity" },
-  { title: "Step 4 of 6: Replace the part", icon: Wrench, content: "replace" },
-  { title: "Step 5 of 6: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Step 1 of 5: Unplug the machine", icon: Unplug, content: "unplug" },
+  { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
+  { title: "Step 3 of 5: Test before you replace", icon: Zap, content: "continuity" },
+  { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
+  { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
   { title: "Did that fix it?", icon: Check, content: "verify" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
@@ -168,18 +168,15 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               {current.content === "unplug" && <InstructionStep title="Step 1 of 5: Unplug the machine" description="Safety first. Unplug the dryer from the wall outlet. If it's a gas dryer, also turn off the gas supply valve." tip="Pull the dryer away from the wall gently. You may need a friend for heavy models." />}
               {current.content === "panel" && <InstructionStep title="Step 2 of 5: Remove the back panel" description="Using a Phillips-head screwdriver, remove the 6 screws holding the rear access panel." tip="Keep the screws in a small bowl — they're easy to lose!" />}
               {current.content === "continuity" && (
-                <ContinuityTest
+                <ContinuityTestInline
                   parts={PARTS}
                   failedParts={failedParts}
                   onToggle={toggleFailedPart}
-                  onNext={next}
-                  onSkip={next}
-                  onBack={prev}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 6: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 6: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
-              {current.content === "test" && <InstructionStep title="Step 5 of 6: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
               {current.content === "verify" && (
                 <VerifyScreen onNext={next} onProCall={() => {
                   toast("Passing your repair data to a Master Tech...");
@@ -282,38 +279,27 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
   );
 };
 
-/* =================== CONTINUITY TEST =================== */
+/* =================== CONTINUITY TEST INLINE =================== */
 
-const ContinuityTest = ({
+const ContinuityTestInline = ({
   parts,
   failedParts,
   onToggle,
-  onNext,
-  onSkip,
-  onBack,
 }: {
   parts: typeof ELECTRIC_PARTS;
   failedParts: Set<string>;
   onToggle: (id: string) => void;
-  onNext: () => void;
-  onSkip: () => void;
-  onBack: () => void;
 }) => (
-  <motion.div
-    initial={{ opacity: 0, x: 30 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -30 }}
-    transition={{ duration: 0.25 }}
-  >
-    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">
-      Test first. Order only what's broken.
+  <div>
+    <h2 className="font-heading text-xl sm:text-2xl text-foreground mb-2 break-words">
+      Test before you replace.
     </h2>
-    <p className="text-muted-foreground mb-6 break-words">
-      Set your multimeter to continuity mode (🔊). Touch both leads to each part below. No beep = bad part.
+    <p className="text-muted-foreground text-sm mb-6 break-words">
+      The panel is open. Touch your multimeter leads to each part. No beep = bad. Tap to mark what failed.
     </p>
 
     <div className="space-y-3 mb-6">
-      {parts.map((part, i) => {
+      {parts.map((part) => {
         const failed = failedParts.has(part.id);
         return (
           <motion.button
@@ -351,32 +337,15 @@ const ContinuityTest = ({
       })}
     </div>
 
-    <div className="rounded-xl bg-muted/50 border border-border/50 p-3 mb-32">
+    <div className="rounded-xl bg-muted/50 border border-border/50 p-3">
       <div className="flex gap-2">
         <Info className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
         <p className="text-xs text-muted-foreground break-words">
-          Not sure how to test? Skip this step — we'll include the most likely part by default.
+          Already ordered the thermal fuse? It's fine to replace it regardless — it's the most likely culprit.
         </p>
       </div>
     </div>
-
-    {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
-      <button
-        onClick={onBack}
-        className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
-      >
-        <ArrowLeft className="h-5 w-5 text-foreground" />
-      </button>
-      <button
-        onClick={failedParts.size > 0 ? onNext : onSkip}
-        className="flex-1 h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
-      >
-        {failedParts.size > 0 ? `Next — ${failedParts.size} part${failedParts.size > 1 ? "s" : ""} failed` : "Skip — use default"}
-        <ArrowRight className="h-5 w-5" />
-      </button>
-    </div>
-  </motion.div>
+  </div>
 );
 
 /* =================== PREP PHASE SCREENS =================== */
