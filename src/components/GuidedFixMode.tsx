@@ -439,56 +439,104 @@ const SmartCart = ({
   total: number;
   onOrder: () => void;
   onBack: () => void;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, x: 30 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -30 }}
-    transition={{ duration: 0.25 }}
-  >
-    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Let's get what you're missing.</h2>
-    <p className="text-muted-foreground mb-6">Everything ships with Prime.</p>
+}) => {
+  const [ordered, setOrdered] = useState(false);
 
-    <div className="glass-card rounded-2xl p-5 space-y-4 mb-32">
-      {/* Dynamic parts from test results */}
-      {cartParts.map((p) => (
-        <CartItem key={p.id} label={p.label} price={`$${p.price.toFixed(2)}`} required />
-      ))}
-
-      {/* Conditional missing tools */}
-      {missingTools.map((t) => (
-        <CartItem key={t.id} label={t.label} price={`$${t.price.toFixed(2)}`} />
-      ))}
-
-      {missingTools.length === 0 && (
-        <p className="text-sm text-success font-medium">✓ You have all the tools you need!</p>
-      )}
-    </div>
-
-    {/* Sticky bottom */}
-    <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md">
-      <div className="flex justify-between items-center mb-3 px-1">
-        <span className="text-muted-foreground text-sm">Total</span>
-        <span className="text-foreground font-bold text-xl">${total.toFixed(2)}</span>
-      </div>
-      <div className="flex gap-3">
-        <button
-          onClick={onBack}
-          className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
+  if (ordered) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+          className="h-16 w-16 rounded-full bg-success/15 flex items-center justify-center mb-5"
         >
-          <ArrowLeft className="h-5 w-5 text-foreground" />
-        </button>
-        <button
+          <Check className="h-8 w-8 text-success" />
+        </motion.div>
+        <h2 className="font-heading text-2xl text-foreground mb-2">
+          Order placed! 🎉
+        </h2>
+        <p className="text-muted-foreground text-sm mb-1">
+          Arriving tomorrow with Prime.
+        </p>
+        <p className="text-xs text-muted-foreground mb-8">
+          Come back when your parts arrive.
+        </p>
+        {/* What was ordered */}
+        <div className="w-full max-w-xs rounded-2xl bg-muted/50 border border-border/50 p-4 mb-8 text-left space-y-2">
+          {cartParts.map((p) => (
+            <div key={p.id} className="flex justify-between items-center text-sm">
+              <span className="text-foreground break-words mr-2">{p.label}</span>
+              <span className="text-success font-semibold flex-shrink-0">${p.price.toFixed(2)}</span>
+            </div>
+          ))}
+        </div>
+        <motion.button
+          whileTap={{ scale: 0.97 }}
           onClick={onOrder}
-          className="flex-1 h-14 rounded-xl bg-foreground text-background font-semibold text-base touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+          className="w-full max-w-xs h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 touch-manipulation"
         >
-          <ShoppingCart className="h-5 w-5" />
-          Order with Amazon Prime
-        </button>
+          Start the Repair Guide
+        </motion.button>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.25 }}
+    >
+      <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2 break-words">Let's get what you're missing.</h2>
+      <p className="text-muted-foreground mb-6">Everything ships with Prime.</p>
+
+      <div className="glass-card rounded-2xl p-5 space-y-4 mb-32">
+        {/* Dynamic parts from test results */}
+        {cartParts.map((p) => (
+          <CartItem key={p.id} label={p.label} price={`$${p.price.toFixed(2)}`} required />
+        ))}
+
+        {/* Conditional missing tools */}
+        {missingTools.map((t) => (
+          <CartItem key={t.id} label={t.label} price={`$${t.price.toFixed(2)}`} />
+        ))}
+
+        {missingTools.length === 0 && (
+          <p className="text-sm text-success font-medium">✓ You have all the tools you need!</p>
+        )}
       </div>
-    </div>
-  </motion.div>
-);
+
+      {/* Sticky bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md">
+        <div className="flex justify-between items-center mb-3 px-1">
+          <span className="text-muted-foreground text-sm">Total</span>
+          <span className="text-foreground font-bold text-xl">${total.toFixed(2)}</span>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={onBack}
+            className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center touch-manipulation active:scale-95 transition-transform flex-shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </button>
+          <button
+            onClick={() => setOrdered(true)}
+            className="flex-1 h-14 rounded-xl bg-foreground text-background font-semibold text-base touch-manipulation active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            Order with Amazon Prime
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const CartItem = ({ label, price, required }: { label: string; price: string; required?: boolean }) => (
   <div className="flex items-center justify-between">
