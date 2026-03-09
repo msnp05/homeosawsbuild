@@ -78,7 +78,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       setMachineStatusIdx((p) => Math.min(p + 1, MACHINE_STATUSES.length - 1));
     }, 2000);
     return () => clearInterval(interval);
-  }, [paused]);
+  }, [paused, stickerPhase]);
 
   // Voice transcription word-by-word — only after sticker done
   useEffect(() => {
@@ -86,7 +86,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
     if (visibleWords >= TRANSCRIPT_WORDS.length) return;
     const t = setTimeout(() => setVisibleWords((w) => w + 1), 1200);
     return () => clearTimeout(t);
-  }, [visibleWords, muted, paused]);
+  }, [visibleWords, muted, paused, stickerPhase]);
 
   // Confidence progression — only after sticker done
   useEffect(() => {
@@ -97,7 +97,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       setTimeout(() => { setConfidenceStage(3); }, 8000),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [paused]);
+  }, [paused, stickerPhase]);
 
   // Animate confidence value + haptic pulse on stage change
   useEffect(() => {
@@ -215,7 +215,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       </motion.div>
 
       {/* Viewfinder area */}
-      <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-hidden min-h-0">
+      <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-hidden min-h-0 mb-[76px]">
         <img src={dryerImage} alt="Dryer viewfinder" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-transparent to-foreground/40" />
 
@@ -314,14 +314,14 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
         </AnimatePresence>
 
         {/* Embedded Dual-channel audio panels */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 p-2 space-y-1.5">
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-1.5 space-y-1">
           {/* Panel A: Machine Sound */}
-          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-2.5 py-1.5">
             <div className="flex items-center gap-2 mb-1">
               <Activity className="h-3.5 w-3.5 text-accent" />
               <span className="text-[10px] font-semibold text-primary-foreground/80 uppercase tracking-wide">Listening to your dryer...</span>
             </div>
-            <div className="flex items-center justify-center gap-[2px] h-6 mb-1">
+            <div className="flex items-center justify-center gap-[2px] h-5 mb-1">
               {Array.from({ length: 20 }).map((_, i) => (
                 <motion.div
                   key={i}
@@ -359,7 +359,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
           </div>
 
           {/* Panel B: Your Voice */}
-          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-2.5 py-1.5">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <AudioLines className="h-3.5 w-3.5 text-accent" />
@@ -398,7 +398,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       </div>
 
       {/* Bottom mute toggle */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md z-30">
+      <div className="fixed bottom-0 left-0 right-0 p-3 pb-[max(1rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md z-30">
         <div className="flex gap-3">
           <motion.button
             onClick={() => setMuted((m) => !m)}
