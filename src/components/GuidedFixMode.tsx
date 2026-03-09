@@ -85,6 +85,10 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
 
   const missingTools = TOOLS.filter((t) => !ownedTools.has(t.id));
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
+
   const current = REPAIR_STEPS[step];
   const next = () => setStep((s) => Math.min(s + 1, REPAIR_STEPS.length - 1));
   const prev = () => {
