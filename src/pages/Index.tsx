@@ -69,8 +69,19 @@ const Index = () => {
     setDiagnosticAnswers({});
   };
 
+  const HAZARD_KEYWORDS = [
+    "burning", "smoke", "sparks", "spark", "bang", "explosion",
+    "fire", "flames", "smell gas", "gas smell", "shocked", "shock",
+    "arc", "melting", "melted", "scorch", "hot to touch"
+  ];
+
   const handleTextSubmit = (text: string) => {
     setSymptomText(text);
+    const lower = text.toLowerCase();
+    const isHazard = HAZARD_KEYWORDS.some((kw) => lower.includes(kw));
+    if (isHazard) {
+      setIsLowConfidence(true);
+    }
     setStep("context");
   };
 
