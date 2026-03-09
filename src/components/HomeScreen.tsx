@@ -6,10 +6,11 @@ import { toast } from "@/hooks/use-toast";
 interface HomeScreenProps {
   onScan: () => void;
   onTextSubmit: (text: string) => void;
+  initialSymptom?: string;
 }
 
-const HomeScreen = ({ onScan, onTextSubmit }: HomeScreenProps) => {
-  const [textInput, setTextInput] = useState("");
+const HomeScreen = ({ onScan, onTextSubmit, initialSymptom = "" }: HomeScreenProps) => {
+  const [textInput, setTextInput] = useState(initialSymptom);
 
   const handleScan = () => {
     toast({

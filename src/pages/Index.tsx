@@ -159,7 +159,7 @@ const Index = () => {
             key="guided"
             answers={diagnosticAnswers}
             onBack={() => setStep("results")}
-            onStartOver={handleStartOver}
+            onStartOver={handleFullReset}
             onProCall={() => setStep("pro")}
           />
         )}

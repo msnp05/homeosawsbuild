@@ -208,9 +208,9 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
                 </button>
                 <button
                   onClick={onStartOver}
-                  className="flex-1 h-14 rounded-xl bg-destructive text-destructive-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                  className="flex-1 h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
                 >
-                  Yes, start over
+                  Yes, go back
                 </button>
               </div>
             </motion.div>
