@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Info } from "lucide-react";
+import { ArrowLeft, Check, Info, Sparkles } from "lucide-react";
 import { ContextQuestion } from "@/lib/diagnostic-data";
 
 interface ContextQuestionsProps {
@@ -157,6 +157,16 @@ const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: Conte
             {remaining} quick question{remaining > 1 ? "s" : ""}, then your diagnosis.
           </p>
         </motion.div>
+
+        {/* Inferred answers pill */}
+        {Object.keys(inferred).length > 0 && (
+          <div className="inline-flex items-center gap-1.5 mb-4 bg-accent/10 rounded-full px-3 py-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
+            <span className="text-xs font-medium text-accent">
+              ✨ {Object.keys(inferred).length} answers pre-filled from your description
+            </span>
+          </div>
+        )}
 
         {/* Progress bar */}
         <div className="mb-8">

@@ -5,6 +5,7 @@ import {
   PartyPopper, Check, Package, Zap, AlertCircle, Info,
   LifeBuoy, X as XIcon, AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface GuidedFixModeProps {
   answers?: Record<string, string>;
@@ -34,11 +35,12 @@ const GAS_PARTS = [
 ];
 
 const REPAIR_STEPS = [
-  { title: "Step 1 of 5: Unplug the machine", icon: Unplug, content: "unplug" },
-  { title: "Step 2 of 5: Remove the back panel", icon: Wrench, content: "panel" },
-  { title: "Step 3 of 5: Quick Test", icon: Zap, content: "continuity" },
-  { title: "Step 4 of 5: Replace the part", icon: Wrench, content: "replace" },
-  { title: "Step 5 of 5: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Step 1 of 6: Unplug the machine", icon: Unplug, content: "unplug" },
+  { title: "Step 2 of 6: Remove the back panel", icon: Wrench, content: "panel" },
+  { title: "Step 3 of 6: Quick Test", icon: Zap, content: "continuity" },
+  { title: "Step 4 of 6: Replace the part", icon: Wrench, content: "replace" },
+  { title: "Step 5 of 6: Reassemble & test", icon: Wrench, content: "test" },
+  { title: "Did that fix it?", icon: Check, content: "verify" },
   { title: "", icon: PartyPopper, content: "done" },
 ];
 
@@ -175,10 +177,16 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
                   onBack={prev}
                 />
               )}
-              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 5: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
-              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 5: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
-              {current.content === "test" && <InstructionStep title="Step 5 of 5: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
-              {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} />}
+              {current.content === "replace" && !isGas && <InstructionStep title="Step 4 of 6: Locate & replace the fuse" description="The thermal fuse is a small white plastic piece on the exhaust duct. Disconnect the two wires, remove the old fuse, and snap in the new one." tip="Take a photo of the wires before disconnecting." />}
+              {current.content === "replace" && isGas && <InstructionStep title="Step 4 of 6: Replace the gas valve coils" description="The gas valve coil pack is located on the front of the gas valve body. Remove the two wire connectors and the mounting clip, then slide off the old coils and snap on the new kit." tip="The coils only fit one way — align the tabs before pressing down." />}
+              {current.content === "test" && <InstructionStep title="Step 5 of 6: Reassemble & test" description="Screw the back panel on, plug the dryer back in, and run a test cycle with a damp towel for 10 minutes." tip="If the towel is warm and dry, you nailed it!" />}
+              {current.content === "verify" && (
+                <VerifyScreen onNext={next} onProCall={() => {
+                  toast("Passing your repair data to a Master Tech...");
+                  onProCall?.();
+                }} />
+              )}
+              {current.content === "done" && <CompletionScreen cartParts={cartParts} onStartOver={onStartOver} onProCall={onProCall} />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -192,7 +200,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
           transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSOS(true)}
-          className="fixed top-4 right-4 z-30 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
+          className="fixed top-16 right-4 z-40 flex items-center gap-1.5 bg-destructive/10 border border-destructive/30 rounded-full px-3 py-2 touch-manipulation"
         >
           <LifeBuoy className="h-4 w-4 text-destructive" />
           <span className="text-xs font-semibold text-destructive">Stuck? Call a Pro</span>
@@ -202,6 +210,15 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       {/* SOS Bottom Sheet */}
       <AnimatePresence>
         {showSOS && (
+          <>
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowSOS(false)}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          />
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -239,11 +256,12 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
               </motion.button>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
 
       {/* Bottom nav — only for repair steps */}
-      {prepPhase === null && current.content !== "done" && (
+  {prepPhase === null && current.content !== "done" && current.content !== "verify" && (
         <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
           <button
             onClick={prev}
@@ -584,8 +602,52 @@ const InstructionStep = ({ title, description, tip }: { title: string; descripti
   </div>
 );
 
-const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: number }[]; onStartOver: () => void }) => {
+const VerifyScreen = ({ onNext, onProCall }: { onNext: () => void; onProCall: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4"
+  >
+    <h2 className="font-heading text-2xl sm:text-3xl text-foreground mb-2">Run a test cycle now.</h2>
+    <p className="text-muted-foreground mb-8 break-words max-w-sm">
+      Start your dryer with a damp towel and let it run for 5 minutes. Is it heating up?
+    </p>
+    <div className="w-full max-w-sm space-y-3">
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={onNext}
+        className="w-full h-16 rounded-2xl bg-success text-success-foreground font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
+      >
+        ✅ Yes! It's heating!
+      </motion.button>
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={onProCall}
+        className="w-full h-16 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive font-semibold text-base touch-manipulation flex items-center justify-center gap-2"
+      >
+        ❌ Still not heating
+      </motion.button>
+    </div>
+  </motion.div>
+);
+
+const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { price: number }[]; onStartOver: () => void; onProCall?: () => void }) => {
   const partsTotal = cartParts.reduce((s, p) => s + p.price, 0);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'I just fixed my dryer with HomeOS!',
+          text: 'Saved $185 in 15 minutes.',
+          url: 'https://homeos.app',
+        });
+      } catch {}
+    } else {
+      toast("Link copied to clipboard!");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -620,10 +682,20 @@ const CompletionScreen = ({ cartParts, onStartOver }: { cartParts: { price: numb
 
       <button
         onClick={onStartOver}
-        className="h-14 px-8 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform"
+        className="w-full max-w-xs h-14 rounded-xl bg-accent text-accent-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
       >
-        Back to Home
+        Fix another appliance
       </button>
+
+      <div className="w-full max-w-xs">
+        <p className="text-xs text-muted-foreground mb-2">💬 Know someone with the same problem?</p>
+        <button
+          onClick={handleShare}
+          className="w-full h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+        >
+          Share this fix
+        </button>
+      </div>
     </motion.div>
   );
 };

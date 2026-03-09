@@ -4,6 +4,7 @@ import {
   ChevronDown, Search, Sparkles, AlertTriangle, Info,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface DiagnosisResultsProps {
   answers?: Record<string, string>;
@@ -15,6 +16,7 @@ interface DiagnosisResultsProps {
 
 const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, isLowConfidence: isLowConfidenceProp = false }: DiagnosisResultsProps) => {
   const [localLowConfidence, setLocalLowConfidence] = useState(isLowConfidenceProp);
+  const [confirmReset, setConfirmReset] = useState(false);
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const ventDirty = answers.vent_cleaning === "It's been a while" || answers.vent_cleaning === "Never / Not sure";
   const topCause = isGas ? "Gas Valve Solenoid Coils" : "Blown Thermal Fuse";
@@ -70,12 +72,13 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-6 w-6 text-success flex-shrink-0 mt-0.5" />
               <div>
-                <h2 className="font-heading text-2xl text-foreground mb-1">
+              <h2 className="font-heading text-2xl text-foreground mb-1">
                   Good news: We know exactly what's wrong.
                 </h2>
-                <p className="text-foreground/80 text-base font-medium break-words">
-                  Most likely: <span className="text-foreground font-semibold">{topCause}</span>
-                </p>
+                <p className="font-heading text-3xl sm:text-4xl text-foreground font-bold mt-2 mb-1 break-words">{topCause}</p>
+                <div className="inline-flex items-center gap-1.5 mt-2 bg-success/20 rounded-full px-3 py-1">
+                  <span className="text-sm font-bold text-success">91% Confident</span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -189,13 +192,38 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
 
         {/* Start over */}
         <div className="text-center mt-6">
-          <button
-            onClick={onStartOver}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Start over
-          </button>
+          {!confirmReset ? (
+            <button
+              onClick={() => setConfirmReset(true)}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+            >
+              <RotateCcw className="h-4 w-4" />
+              Start over
+            </button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl bg-card border border-border p-5 max-w-sm mx-auto"
+            >
+              <h4 className="font-heading text-lg text-foreground mb-1">Start over?</h4>
+              <p className="text-sm text-muted-foreground mb-4">You'll lose your current diagnosis.</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmReset(false)}
+                  className="flex-1 h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onStartOver}
+                  className="flex-1 h-14 rounded-xl bg-destructive text-destructive-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
+                >
+                  Yes, start over
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>
