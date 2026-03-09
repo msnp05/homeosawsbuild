@@ -260,7 +260,7 @@ const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedF
       </AnimatePresence>
 
       {/* Bottom nav — only for repair steps */}
-      {prepPhase === null && current.content !== "done" && (
+  {prepPhase === null && current.content !== "done" && current.content !== "verify" && (
         <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(2rem,env(safe-area-inset-bottom))] bg-card/90 backdrop-blur-md flex gap-3">
           <button
             onClick={prev}
