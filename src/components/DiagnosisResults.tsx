@@ -197,8 +197,8 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl bg-card border border-border p-5 max-w-sm mx-auto"
             >
-              <h4 className="font-heading text-lg text-foreground mb-1">Start over?</h4>
-              <p className="text-sm text-muted-foreground mb-4">You'll lose your current diagnosis.</p>
+              <h4 className="font-heading text-lg text-foreground mb-1">Change my answers?</h4>
+              <p className="text-sm text-muted-foreground mb-4">We'll go back to the first question. Your original description is saved.</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmReset(false)}
