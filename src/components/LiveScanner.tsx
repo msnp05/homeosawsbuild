@@ -314,9 +314,9 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
         </AnimatePresence>
 
         {/* Embedded Dual-channel audio panels */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 p-2 space-y-1.5">
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-1.5 space-y-1">
           {/* Panel A: Machine Sound */}
-          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-3 py-2">
+          <div className="bg-foreground/60 backdrop-blur-xl rounded-xl px-2.5 py-1.5">
             <div className="flex items-center gap-2 mb-1">
               <Activity className="h-3.5 w-3.5 text-accent" />
               <span className="text-[10px] font-semibold text-primary-foreground/80 uppercase tracking-wide">Listening to your dryer...</span>
