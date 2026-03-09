@@ -118,7 +118,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
         {!localLowConfidence && <DiagnosticReasoning isGas={isGas} />}
 
         {/* Card A: Fix it myself — hidden in low confidence */}
-        {!isLowConfidence && (
+        {!localLowConfidence && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
