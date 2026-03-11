@@ -6,6 +6,7 @@ import { ContextQuestion } from "@/lib/diagnostic-data";
 interface ContextQuestionsProps {
   questions: ContextQuestion[];
   symptom?: string;
+  prefilled?: Record<string, string>;
   onComplete: (answers: Record<string, string>) => void;
   onBack: () => void;
 }
