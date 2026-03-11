@@ -82,25 +82,15 @@ const FixedCelebration = ({ onStartOver }: { onStartOver: () => void }) => {
 
       <motion.button
         whileTap={{ scale: 0.97 }}
-        onClick={async () => {
-          const shareData = {
-            title: "HomeOS fixed my dryer in 10 minutes 🔥",
-            text: "I just used HomeOS to diagnose and fix my Samsung dryer myself — saved $200 on a repair call. It's an AI repair guide built on Amazon Bedrock. Check it out 👇",
-            url: "https://builder.aws.com/connect/events/10000aideas",
-          };
-          if (navigator.share) {
-            try { await navigator.share(shareData); } catch (_) { /* cancelled */ }
-          } else {
-            await navigator.clipboard.writeText(
-              `${shareData.text}\n${shareData.url}`
-            );
-          }
-        }}
+        onClick={handleShare}
         className="w-full h-11 rounded-xl border border-border bg-card text-foreground text-sm font-medium flex items-center justify-center gap-2 touch-manipulation"
       >
-        <span>🔗</span>
-        <span>Share HomeOS with a friend</span>
+        <span>{copied ? "✅" : "🔗"}</span>
+        <span>{copied ? "Copied! Share anywhere 🎉" : "Share the Fix"}</span>
       </motion.button>
+      <p className="text-xs text-muted-foreground text-center mt-2">
+        Help a neighbor fix theirs too
+      </p>
 
       <p className="text-[10px] text-muted-foreground text-center">
         HomeOS × AWS Bedrock · Seattle, WA 🏠
