@@ -215,7 +215,7 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
       </motion.div>
 
       {/* Viewfinder area */}
-      <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-hidden min-h-0 mb-[76px]">
+      <div className="flex-1 relative mx-4 my-2 rounded-2xl overflow-visible min-h-0 mb-[76px]">
         <img src={dryerImage} alt="Dryer viewfinder" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-transparent to-foreground/40" />
 
