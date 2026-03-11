@@ -77,6 +77,7 @@ const Index = () => {
     setSymptomText("");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
+    setCameFromScanner(false);
   };
 
   const HAZARD_KEYWORDS = [
