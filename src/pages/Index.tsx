@@ -88,6 +88,7 @@ const Index = () => {
 
   const handleTextSubmit = (text: string) => {
     setSymptomText(text);
+    setCameFromScanner(false);
     const lower = text.toLowerCase();
     const isHazard = HAZARD_KEYWORDS.some((kw) => lower.includes(kw));
     if (isHazard) {
