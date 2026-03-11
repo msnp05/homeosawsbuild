@@ -205,6 +205,44 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
           )}
         </div>
       </div>
+
+      {/* Sticky bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border/40 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        {!localLowConfidence && (
+          <p className="text-[10px] text-muted-foreground text-center mb-2 tracking-wide">
+            Ready to proceed?
+          </p>
+        )}
+
+        {!localLowConfidence && (
+          <div className="flex gap-3">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onGuidedFix}
+              className="flex-1 h-14 rounded-2xl bg-accent text-accent-foreground font-semibold text-base touch-manipulation"
+            >
+              Start Guided Fix
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onProCall}
+              className="flex-1 h-14 rounded-2xl border border-border bg-card text-foreground font-semibold text-base touch-manipulation"
+            >
+              Talk to a Pro
+            </motion.button>
+          </div>
+        )}
+
+        {localLowConfidence && (
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={onProCall}
+            className="w-full h-14 rounded-2xl bg-accent text-accent-foreground font-semibold text-base touch-manipulation"
+          >
+            Talk to a Pro
+          </motion.button>
+        )}
+      </div>
     </motion.div>
   );
 };
