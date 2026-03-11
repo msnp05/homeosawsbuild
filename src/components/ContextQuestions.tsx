@@ -265,22 +265,75 @@ const ContextQuestions = ({ questions, symptom = "", prefilled, onComplete, onBa
                             <motion.button
                               key={option}
                               whileTap={{ scale: 0.97 }}
-                              onClick={() => handleSelect(q.id, qIdx, option)}
+                              onClick={() => { setOtherMode(null); setOtherText(""); setOtherError(""); handleSelect(q.id, qIdx, option); }}
                               className={`rounded-xl border-2 p-3.5 text-left text-foreground transition-all touch-manipulation min-h-[52px] text-sm font-medium ${
-                                isCurrentAnswer
+                                isCurrentAnswer && otherMode !== q.id
                                   ? "border-accent bg-accent/10"
                                   : "border-border bg-card/50"
                               }`}
                             >
                               <span className="flex items-center justify-between">
                                 {option}
-                                {isCurrentAnswer && (
+                                {isCurrentAnswer && otherMode !== q.id && (
                                   <Check className="h-4 w-4 text-accent flex-shrink-0 ml-2" />
                                 )}
                               </span>
                             </motion.button>
                           );
                         })}
+
+                        {/* "Other" option with text input */}
+                        {q.allowOther && (
+                          otherMode === q.id ? (
+                            <div className="rounded-xl border-2 border-accent/40 bg-card/50 p-3.5 space-y-2">
+                              <label className="text-xs font-medium text-muted-foreground">Enter your answer:</label>
+                              <input
+                                ref={(el) => { if (el) el.focus(); }}
+                                type="text"
+                                value={otherText}
+                                onChange={(e) => { setOtherText(e.target.value); setOtherError(""); }}
+                                onKeyDown={(e) => { if (e.key === "Enter") handleOtherSubmit(q, qIdx); }}
+                                placeholder={q.otherPlaceholder || "Type here..."}
+                                maxLength={q.otherValidation?.maxLength || 100}
+                                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px]"
+                              />
+                              {otherError && (
+                                <p className="text-xs text-danger font-medium">{otherError}</p>
+                              )}
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleOtherSubmit(q, qIdx)}
+                                  className="flex-1 rounded-lg bg-accent text-accent-foreground text-sm font-medium py-2.5 min-h-[44px] touch-manipulation transition-colors hover:bg-accent/90"
+                                >
+                                  Confirm
+                                </button>
+                                <button
+                                  onClick={() => { setOtherMode(null); setOtherText(""); setOtherError(""); }}
+                                  className="rounded-lg border border-border px-3 py-2.5 text-sm text-muted-foreground min-h-[44px] touch-manipulation"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <motion.button
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() => { setOtherMode(q.id); setOtherText(""); setOtherError(""); }}
+                              className={`rounded-xl border-2 border-dashed p-3.5 text-left transition-all touch-manipulation min-h-[52px] text-sm font-medium ${
+                                answers[q.id] && !q.options?.includes(answers[q.id]) && answers[q.id] !== "skipped"
+                                  ? "border-accent bg-accent/10 text-foreground"
+                                  : "border-border/60 text-muted-foreground bg-card/30"
+                              }`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <Type className="h-4 w-4 flex-shrink-0" />
+                                {answers[q.id] && !q.options?.includes(answers[q.id]) && answers[q.id] !== "skipped"
+                                  ? answers[q.id]
+                                  : "Other — type my own"}
+                              </span>
+                            </motion.button>
+                          )
+                        )}
                       </div>
 
                       <button
