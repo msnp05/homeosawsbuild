@@ -764,17 +764,23 @@ const InstructionStep = ({
 const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { price: number }[]; onStartOver: () => void; onProCall?: () => void }) => {
   const partsTotal = cartParts.reduce((s, p) => s + p.price, 0);
 
+  const [sharecopied, setShareCopied] = useState(false);
+
   const handleShare = async () => {
+    const shareText = `🔧 Just fixed my dryer myself with HomeOS.\n\nSaved ~$180 in repair costs.\nTook under 30 minutes.\nCost $18 in parts.\n\nAI diagnosed the issue in 60 seconds —\nthermal fuse, confirmed.\n\nIf you own appliances, you need this 👇\nhttps://homeosapp.com\n\nBuilt for the AWS #10000AIdeas Challenge 🏆`;
+
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'I just fixed my dryer with HomeOS!',
-          text: 'Saved $185 in 15 minutes.',
-          url: 'https://homeos.app',
+          title: "I fixed my dryer with HomeOS",
+          text: shareText,
+          url: "https://homeosapp.com",
         });
-      } catch {}
+      } catch (_) { /* cancelled */ }
     } else {
-      toast("Link copied to clipboard!");
+      await navigator.clipboard.writeText(shareText);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 3000);
     }
   };
 
