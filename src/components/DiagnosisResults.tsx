@@ -30,7 +30,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pb-32 overflow-x-hidden max-w-full"
+      className="pb-44 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
         {/* Success / Low Confidence banner */}
