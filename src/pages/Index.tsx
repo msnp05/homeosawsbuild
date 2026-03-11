@@ -57,6 +57,9 @@ const DRYER_QUESTIONS = [
       "No, it's completely dead",
       "It makes a weird grinding noise",
     ],
+    allowOther: true,
+    otherPlaceholder: "Describe what happens...",
+    otherValidation: { minLength: 3, maxLength: 200 },
   },
 ];
 
