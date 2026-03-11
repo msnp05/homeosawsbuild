@@ -2,7 +2,28 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PartyPopper, RotateCcw } from "lucide-react";
 
-const FixedCelebration = ({ onStartOver }: { onStartOver: () => void }) => (
+const FixedCelebration = ({ onStartOver }: { onStartOver: () => void }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareText = `🔧 Just fixed my dryer myself with HomeOS.\n\nSaved ~$180 in repair costs.\nTook under 30 minutes.\nCost $18 in parts.\n\nAI diagnosed the issue in 60 seconds —\nthermal fuse, confirmed.\n\nIf you own appliances, you need this 👇\nhttps://homeosapp.com\n\nBuilt for the AWS #10000AIdeas Challenge 🏆`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "I fixed my dryer with HomeOS",
+          text: shareText,
+          url: "https://homeosapp.com",
+        });
+      } catch (_) { /* cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+  };
+
+  return (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
