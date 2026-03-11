@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, Info, PencilLine, Type } from "lucide-react";
 import { ContextQuestion } from "@/lib/diagnostic-data";
