@@ -154,6 +154,19 @@ const ContextQuestions = ({ questions, symptom = "", prefilled, onComplete, onBa
     scrollToQuestion(nextQuestion.id);
   };
 
+  const handleOtherSubmit = (q: ContextQuestion, qIdx: number) => {
+    const text = otherText.trim();
+    const v = q.otherValidation;
+    if (!text) { setOtherError("Please enter a value"); return; }
+    if (v?.minLength && text.length < v.minLength) { setOtherError(`At least ${v.minLength} characters`); return; }
+    if (v?.maxLength && text.length > v.maxLength) { setOtherError(`Max ${v.maxLength} characters`); return; }
+    if (v?.pattern && !v.pattern.test(text)) { setOtherError(v.patternMessage || "Invalid characters"); return; }
+    setOtherMode(null);
+    setOtherText("");
+    setOtherError("");
+    handleSelect(q.id, qIdx, text);
+  };
+
   const handleEdit = (questionIdx: number) => {
     setActiveIdx(questionIdx);
     scrollToQuestion(questions[questionIdx].id);
