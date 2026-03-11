@@ -88,6 +88,9 @@ export interface ContextQuestion {
   options?: string[];
   condition?: { id: string; value: string };
   helperText?: string;
+  allowOther?: boolean;
+  otherPlaceholder?: string;
+  otherValidation?: { minLength?: number; maxLength?: number; pattern?: RegExp; patternMessage?: string };
 }
 
 export const BINARY_QUESTIONS: Record<Category, { id: string; question: string }[]> = {
