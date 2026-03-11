@@ -79,6 +79,22 @@ const ContextQuestions = ({ questions, symptom = "", prefilled, onComplete, onBa
   const [activeIdx, setActiveIdx] = useState<number>(-1);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const questionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [otherMode, setOtherMode] = useState<string | null>(null);
+  const [otherText, setOtherText] = useState("");
+  const [otherError, setOtherError] = useState("");
+
+  const handleOtherSubmit = useCallback((q: ContextQuestion, qIdx: number) => {
+    const text = otherText.trim();
+    const v = q.otherValidation;
+    if (!text) { setOtherError("Please enter a value"); return; }
+    if (v?.minLength && text.length < v.minLength) { setOtherError(`At least ${v.minLength} characters`); return; }
+    if (v?.maxLength && text.length > v.maxLength) { setOtherError(`Max ${v.maxLength} characters`); return; }
+    if (v?.pattern && !v.pattern.test(text)) { setOtherError(v.patternMessage || "Invalid characters"); return; }
+    setOtherMode(null);
+    setOtherText("");
+    setOtherError("");
+    handleSelect(q.id, qIdx, text);
+  }, [otherText]);
 
   useEffect(() => {
     const initialRevealed = new Set<string>();
