@@ -115,6 +115,7 @@ const FixedCelebration = ({ onStartOver }: { onStartOver: () => void }) => {
       Back to Home
     </button>
   </motion.div>
-);
+  );
+};
 
 export default FixedCelebration;
