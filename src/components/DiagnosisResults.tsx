@@ -137,12 +137,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             {/* Parts tooltip */}
             <PartsTooltip label={partLabel} isGas={isGas} />
 
-            <button
-              onClick={onGuidedFix}
-              className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
-            >
-              Start Guided Fix
-            </button>
           </motion.div>
         )}
 
