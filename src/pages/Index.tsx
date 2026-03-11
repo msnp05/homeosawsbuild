@@ -138,6 +138,7 @@ const Index = () => {
             key="context"
             questions={DRYER_QUESTIONS}
             symptom={symptomText}
+            prefilled={cameFromScanner ? { breaker: "Yes, breaker looks fine" } : undefined}
             onComplete={handleContextComplete}
             onBack={() => setStep("home")}
           />
