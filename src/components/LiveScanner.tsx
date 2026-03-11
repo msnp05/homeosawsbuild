@@ -301,10 +301,10 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
               <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 border-b-3 border-l-3 border-accent rounded-bl-lg" />
               <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 border-b-3 border-r-3 border-accent rounded-br-lg" />
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="absolute -bottom-10 left-2 right-2 bg-card/95 backdrop-blur-xl rounded-full px-3 py-1.5 shadow-xl flex items-center gap-1.5 justify-center"
+                className="absolute bottom-2 left-2 right-2 bg-card/95 backdrop-blur-xl rounded-full px-3 py-1.5 shadow-xl flex items-center gap-1.5 justify-center"
               >
                 <Sparkles className="h-3.5 w-3.5 text-accent flex-shrink-0" />
                 <span className="text-xs font-medium text-foreground truncate">Samsung DV42H5000EW/A3</span>
