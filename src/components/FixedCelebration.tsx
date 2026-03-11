@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { PartyPopper, RotateCcw } from "lucide-react";
 
