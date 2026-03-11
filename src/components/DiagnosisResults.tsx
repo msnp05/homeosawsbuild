@@ -30,7 +30,7 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pb-32 overflow-x-hidden max-w-full"
+      className="pb-44 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
         {/* Success / Low Confidence banner */}
@@ -137,12 +137,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             {/* Parts tooltip */}
             <PartsTooltip label={partLabel} isGas={isGas} />
 
-            <button
-              onClick={onGuidedFix}
-              className="w-full h-14 rounded-xl bg-accent text-accent-foreground font-semibold text-base shadow-lg shadow-accent/20 active:scale-[0.98] transition-transform touch-manipulation mt-3"
-            >
-              Start Guided Fix
-            </button>
           </motion.div>
         )}
 
@@ -173,12 +167,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
             </p>
           )}
-          <button
-            onClick={onProCall}
-            className="w-full h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-base active:scale-[0.98] transition-transform touch-manipulation"
-          >
-            Connect to Pro — $15
-          </button>
         </motion.div>
 
         {/* Start over */}
@@ -216,6 +204,44 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
             </motion.div>
           )}
         </div>
+      </div>
+
+      {/* Sticky bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border/40 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        {!localLowConfidence && (
+          <p className="text-[10px] text-muted-foreground text-center mb-2 tracking-wide">
+            Ready to proceed?
+          </p>
+        )}
+
+        {!localLowConfidence && (
+          <div className="flex gap-3">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onGuidedFix}
+              className="flex-1 h-14 rounded-2xl bg-accent text-accent-foreground font-semibold text-base touch-manipulation"
+            >
+              Start Guided Fix
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onProCall}
+              className="flex-1 h-14 rounded-2xl border border-border bg-card text-foreground font-semibold text-base touch-manipulation"
+            >
+              Talk to a Pro
+            </motion.button>
+          </div>
+        )}
+
+        {localLowConfidence && (
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={onProCall}
+            className="w-full h-14 rounded-2xl bg-accent text-accent-foreground font-semibold text-base touch-manipulation"
+          >
+            Talk to a Pro
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );
