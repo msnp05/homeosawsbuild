@@ -820,8 +820,11 @@ const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { 
           onClick={handleShare}
           className="w-full h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
         >
-          Share this fix
+          {sharecopied ? "✅ Copied! Share anywhere 🎉" : "Share this fix"}
         </button>
+        <p className="text-xs text-muted-foreground text-center mt-2">
+          Help a neighbor fix theirs too
+        </p>
       </div>
     </motion.div>
   );
