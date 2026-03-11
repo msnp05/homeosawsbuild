@@ -807,25 +807,62 @@ const CompletionScreen = ({ cartParts, onStartOver, onProCall }: { cartParts: { 
       </p>
 
 
+      {/* AWS 10,000 AIdeas share card */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2 }}
+        className="w-full max-w-sm rounded-2xl bg-accent/10 border border-accent/30 px-5 py-4 flex flex-col gap-3 mb-6 text-left"
+      >
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-semibold text-foreground">
+            🏆 Built for the AWS 10,000 AIdeas Challenge
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            HomeOS is competing for the future of AI-powered home repair.
+            If this saved you a $200 service call — help us win by
+            giving us a like on AWS Builder Center. Takes 10 seconds.
+          </p>
+        </div>
+
+        <a
+          href="https://builder.aws.com/connect/events/10000aideas"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full"
+        >
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            className="w-full h-12 rounded-xl bg-accent text-accent-foreground font-semibold text-sm flex items-center justify-center gap-2 touch-manipulation"
+          >
+            <span>👍</span>
+            <span>Like HomeOS on AWS Builder Center</span>
+          </motion.button>
+        </a>
+
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleShare}
+          className="w-full h-11 rounded-xl border border-border bg-card text-foreground text-sm font-medium flex items-center justify-center gap-2 touch-manipulation"
+        >
+          <span>{sharecopied ? "✅" : "🔗"}</span>
+          <span>{sharecopied ? "Copied! Share anywhere 🎉" : "Share the Fix"}</span>
+        </motion.button>
+        <p className="text-xs text-muted-foreground text-center mt-2">
+          Help a neighbor fix theirs too
+        </p>
+
+        <p className="text-[10px] text-muted-foreground text-center">
+          HomeOS × AWS Bedrock · Seattle, WA 🏠
+        </p>
+      </motion.div>
+
       <button
         onClick={onStartOver}
         className="w-full max-w-xs h-14 rounded-xl bg-primary text-primary-foreground font-semibold touch-manipulation active:scale-[0.98] transition-transform mb-3"
       >
         Fix another appliance
       </button>
-
-      <div className="w-full max-w-xs">
-        <p className="text-xs text-muted-foreground mb-2">💬 Know someone with the same problem?</p>
-        <button
-          onClick={handleShare}
-          className="w-full h-14 rounded-xl bg-muted text-foreground font-semibold text-sm touch-manipulation active:scale-[0.98] transition-transform"
-        >
-          {sharecopied ? "✅ Copied! Share anywhere 🎉" : "Share this fix"}
-        </button>
-        <p className="text-xs text-muted-foreground text-center mt-2">
-          Help a neighbor fix theirs too
-        </p>
-      </div>
     </motion.div>
   );
 };
