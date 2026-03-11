@@ -172,7 +172,7 @@ const Index = () => {
             answers={diagnosticAnswers}
             onGuidedFix={() => setStep("guided")}
             onProCall={() => setStep("pro")}
-            onStartOver={handleStartOver}
+            onStartOver={handleChangeAnswers}
             isLowConfidence={isLowConfidence}
           />
         )}
