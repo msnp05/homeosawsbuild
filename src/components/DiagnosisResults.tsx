@@ -167,12 +167,6 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
               Your dryer has a complex symptom signature. To prevent ordering the wrong parts, let's get a certified tech on video to review the data we just collected.
             </p>
           )}
-          <button
-            onClick={onProCall}
-            className="w-full h-14 rounded-xl bg-primary text-primary-foreground font-semibold text-base active:scale-[0.98] transition-transform touch-manipulation"
-          >
-            Connect to Pro — $15
-          </button>
         </motion.div>
 
         {/* Start over */}
