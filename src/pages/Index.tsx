@@ -78,6 +78,11 @@ const Index = () => {
     // NOTE: intentionally does NOT clear symptomText
   };
 
+  const handleChangeAnswers = () => {
+    // Go back to context questions with all answers preserved.
+    setStep("context");
+  };
+
   const handleFullReset = () => {
     setStep("home");
     setSymptomText("");
@@ -144,7 +149,13 @@ const Index = () => {
             key="context"
             questions={DRYER_QUESTIONS}
             symptom={symptomText}
-            prefilled={cameFromScanner ? { breaker: "Yes, breaker looks fine" } : undefined}
+            prefilled={
+              cameFromScanner
+                ? { breaker: "Yes, breaker looks fine" }
+                : Object.keys(diagnosticAnswers).length > 0
+                ? diagnosticAnswers
+                : undefined
+            }
             onComplete={handleContextComplete}
             onBack={() => setStep("home")}
           />
@@ -161,7 +172,7 @@ const Index = () => {
             answers={diagnosticAnswers}
             onGuidedFix={() => setStep("guided")}
             onProCall={() => setStep("pro")}
-            onStartOver={handleStartOver}
+            onStartOver={handleChangeAnswers}
             isLowConfidence={isLowConfidence}
           />
         )}
