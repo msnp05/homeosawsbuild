@@ -68,6 +68,7 @@ const Index = () => {
     setStep("home");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
+    setCameFromScanner(false);
     // NOTE: intentionally does NOT clear symptomText
   };
 
