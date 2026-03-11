@@ -43,7 +43,10 @@ const DRYER_QUESTIONS = [
     id: "brand",
     question: "What brand is your dryer?",
     type: "select" as const,
-    options: ["Samsung", "LG", "Whirlpool", "Not sure"],
+    options: ["Samsung", "LG", "Whirlpool"],
+    allowOther: true,
+    otherPlaceholder: "e.g. Maytag, GE, Bosch",
+    otherValidation: { minLength: 2, maxLength: 50, pattern: /^[a-zA-Z0-9\s\-&.]+$/, patternMessage: "Letters, numbers, spaces, and hyphens only" },
   },
   {
     id: "spinning",
