@@ -78,6 +78,11 @@ const Index = () => {
     // NOTE: intentionally does NOT clear symptomText
   };
 
+  const handleChangeAnswers = () => {
+    // Go back to context questions with all answers preserved.
+    setStep("context");
+  };
+
   const handleFullReset = () => {
     setStep("home");
     setSymptomText("");
