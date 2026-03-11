@@ -304,10 +304,10 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="absolute -top-12 left-1/2 -translate-x-1/2 bg-card/95 backdrop-blur-xl rounded-full px-4 py-2 shadow-xl flex items-center gap-2 whitespace-nowrap"
+                className="absolute -top-11 left-2 right-2 bg-card/95 backdrop-blur-xl rounded-full px-3 py-1.5 shadow-xl flex items-center gap-1.5 justify-center"
               >
-                <Sparkles className="h-4 w-4 text-accent" />
-                <span className="text-sm font-medium text-foreground">Recognized: Samsung DV42H</span>
+                <Sparkles className="h-3.5 w-3.5 text-accent flex-shrink-0" />
+                <span className="text-xs font-medium text-foreground truncate">Samsung DV42H5000EW/A3</span>
               </motion.div>
             </motion.div>
           )}
