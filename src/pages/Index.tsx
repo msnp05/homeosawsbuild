@@ -62,11 +62,13 @@ const Index = () => {
   const [symptomText, setSymptomText] = useState("");
   const [diagnosticAnswers, setDiagnosticAnswers] = useState<Record<string, string>>({});
   const [isLowConfidence, setIsLowConfidence] = useState(false);
+  const [cameFromScanner, setCameFromScanner] = useState(false);
 
   const handleStartOver = () => {
     setStep("home");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
+    setCameFromScanner(false);
     // NOTE: intentionally does NOT clear symptomText
   };
 
@@ -75,6 +77,7 @@ const Index = () => {
     setSymptomText("");
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
+    setCameFromScanner(false);
   };
 
   const HAZARD_KEYWORDS = [
@@ -85,6 +88,7 @@ const Index = () => {
 
   const handleTextSubmit = (text: string) => {
     setSymptomText(text);
+    setCameFromScanner(false);
     const lower = text.toLowerCase();
     const isHazard = HAZARD_KEYWORDS.some((kw) => lower.includes(kw));
     if (isHazard) {
@@ -127,13 +131,14 @@ const Index = () => {
           <HomeScreen key="home" onScan={() => setStep("scanner")} onTextSubmit={handleTextSubmit} initialSymptom={symptomText} />
         )}
         {step === "scanner" && (
-          <LiveScanner key="scanner" onAnalyze={() => setStep("context")} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
+          <LiveScanner key="scanner" onAnalyze={() => { setCameFromScanner(true); setStep("context"); }} onBack={handleStartOver} onFixed={() => setStep("fixed")} />
         )}
         {step === "context" && (
           <ContextQuestions
             key="context"
             questions={DRYER_QUESTIONS}
             symptom={symptomText}
+            prefilled={cameFromScanner ? { breaker: "Yes, breaker looks fine" } : undefined}
             onComplete={handleContextComplete}
             onBack={() => setStep("home")}
           />

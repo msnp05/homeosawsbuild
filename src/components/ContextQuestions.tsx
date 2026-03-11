@@ -6,6 +6,7 @@ import { ContextQuestion } from "@/lib/diagnostic-data";
 interface ContextQuestionsProps {
   questions: ContextQuestion[];
   symptom?: string;
+  prefilled?: Record<string, string>;
   onComplete: (answers: Record<string, string>) => void;
   onBack: () => void;
 }
@@ -72,8 +73,8 @@ function findNextVisible(questions: ContextQuestion[], fromIdx: number, answers:
   return -1;
 }
 
-const ContextQuestions = ({ questions, symptom = "", onComplete, onBack }: ContextQuestionsProps) => {
-  const inferred = useMemo(() => inferAnswers(symptom, questions), [symptom, questions]);
+const ContextQuestions = ({ questions, symptom = "", prefilled, onComplete, onBack }: ContextQuestionsProps) => {
+  const inferred = useMemo(() => ({ ...inferAnswers(symptom, questions), ...prefilled }), [symptom, questions, prefilled]);
   const [answers, setAnswers] = useState<Record<string, string>>(inferred);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
