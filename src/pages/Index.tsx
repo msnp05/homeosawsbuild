@@ -151,7 +151,7 @@ const Index = () => {
             symptom={symptomText}
             prefilled={
               cameFromScanner
-                ? { breaker: "Yes, breaker looks fine" }
+                ? { breaker: "Yes, breaker looks fine", brand: "Samsung" }
                 : Object.keys(diagnosticAnswers).length > 0
                 ? diagnosticAnswers
                 : undefined
