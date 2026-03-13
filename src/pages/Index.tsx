@@ -183,7 +183,7 @@ const Index = () => {
             answers={diagnosticAnswers}
             onBack={() => setStep("results")}
             onStartOver={handleFullReset}
-            onProCall={() => setStep("pro")}
+            onProCall={() => { setPreviousStep("guided"); setStep("pro"); }}
           />
         )}
         {step === "pro" && (
