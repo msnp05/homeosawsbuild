@@ -188,6 +188,10 @@ const Index = () => {
             onBack={() => setStep("results")}
             onStartOver={handleFullReset}
             onProCall={() => { setPreviousStep("guided"); setStep("pro"); }}
+            repairStep={guidedFixStep}
+            onRepairStepChange={setGuidedFixStep}
+            prepPhase={guidedFixPrepPhase}
+            onPrepPhaseChange={setGuidedFixPrepPhase}
           />
         )}
         {step === "pro" && (
