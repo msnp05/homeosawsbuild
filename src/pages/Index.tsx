@@ -92,6 +92,8 @@ const Index = () => {
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
     setCameFromScanner(false);
+    setGuidedFixStep(0);
+    setGuidedFixPrepPhase("inventory");
   };
 
   const HAZARD_KEYWORDS = [
