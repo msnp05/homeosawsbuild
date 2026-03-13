@@ -108,7 +108,7 @@ const ProVideoCall = ({ onBack, onStartOver }: ProVideoCallProps) => {
                 <MessageSquare className="h-6 w-6 text-primary-foreground" />
               </button>
               <button
-                onClick={onStartOver}
+                onClick={onBack}
                 className="h-14 w-14 rounded-full bg-danger flex items-center justify-center touch-manipulation"
               >
                 <PhoneOff className="h-6 w-6 text-danger-foreground" />
