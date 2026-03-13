@@ -69,6 +69,7 @@ const Index = () => {
   const [diagnosticAnswers, setDiagnosticAnswers] = useState<Record<string, string>>({});
   const [isLowConfidence, setIsLowConfidence] = useState(false);
   const [cameFromScanner, setCameFromScanner] = useState(false);
+  const [previousStep, setPreviousStep] = useState<Step | null>(null);
 
   const handleStartOver = () => {
     setStep("home");
@@ -171,7 +172,7 @@ const Index = () => {
             key="results"
             answers={diagnosticAnswers}
             onGuidedFix={() => setStep("guided")}
-            onProCall={() => setStep("pro")}
+            onProCall={() => { setPreviousStep("results"); setStep("pro"); }}
             onStartOver={handleChangeAnswers}
             isLowConfidence={isLowConfidence}
           />
@@ -182,11 +183,11 @@ const Index = () => {
             answers={diagnosticAnswers}
             onBack={() => setStep("results")}
             onStartOver={handleFullReset}
-            onProCall={() => setStep("pro")}
+            onProCall={() => { setPreviousStep("guided"); setStep("pro"); }}
           />
         )}
         {step === "pro" && (
-          <ProVideoCall key="pro" onBack={() => setStep("results")} onStartOver={handleStartOver} />
+          <ProVideoCall key="pro" onBack={() => setStep(previousStep ?? "results")} onStartOver={handleStartOver} />
         )}
       </AnimatePresence>
     </div>
