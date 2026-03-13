@@ -187,7 +187,7 @@ const Index = () => {
           />
         )}
         {step === "pro" && (
-          <ProVideoCall key="pro" onBack={() => setStep("results")} onStartOver={handleStartOver} />
+          <ProVideoCall key="pro" onBack={() => setStep(previousStep ?? "results")} onStartOver={handleStartOver} />
         )}
       </AnimatePresence>
     </div>
