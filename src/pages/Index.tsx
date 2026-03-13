@@ -69,6 +69,7 @@ const Index = () => {
   const [diagnosticAnswers, setDiagnosticAnswers] = useState<Record<string, string>>({});
   const [isLowConfidence, setIsLowConfidence] = useState(false);
   const [cameFromScanner, setCameFromScanner] = useState(false);
+  const [previousStep, setPreviousStep] = useState<Step | null>(null);
 
   const handleStartOver = () => {
     setStep("home");
