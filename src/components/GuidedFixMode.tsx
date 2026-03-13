@@ -12,6 +12,10 @@ interface GuidedFixModeProps {
   onBack: () => void;
   onStartOver: () => void;
   onProCall?: () => void;
+  repairStep?: number;
+  onRepairStepChange?: (step: number) => void;
+  prepPhase?: PrepPhase;
+  onPrepPhaseChange?: (phase: PrepPhase) => void;
 }
 
 type PrepPhase = "inventory" | "cart" | "transitioning" | null;
