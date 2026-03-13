@@ -263,7 +263,8 @@ const LiveScanner = ({ onAnalyze, onBack, onFixed }: LiveScannerProps) => {
                   >
                     <CheckCircle className="h-8 w-8 text-success" />
                   </motion.div>
-                  <p className="text-success font-semibold text-sm">✓ Model DV42H Confirmed. Parts mapped.</p>
+                  <p className="text-success font-semibold text-sm">✓ Samsung DV42H5000EW/A3</p>
+                  <p className="text-primary-foreground/70 text-xs mt-1">Brand & model confirmed · Parts mapped</p>
                 </motion.div>
               )}
             </motion.div>
