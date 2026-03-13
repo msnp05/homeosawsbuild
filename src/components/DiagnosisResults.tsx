@@ -33,6 +33,22 @@ const DiagnosisResults = ({ answers = {}, onGuidedFix, onProCall, onStartOver, i
       className="pb-44 overflow-x-hidden max-w-full"
     >
       <div className="container mx-auto px-4 py-6 max-w-lg">
+        {/* Appliance identity badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="flex items-center gap-2.5 mb-4 px-1"
+        >
+          <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="h-4 w-4 text-accent" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground truncate">Samsung DV42H5000EW/A3</p>
+            <p className="text-xs text-muted-foreground">{isGas ? "Gas Dryer" : "Electric Dryer"} · Identified via scan</p>
+          </div>
+        </motion.div>
+
         {/* Success / Low Confidence banner */}
         {localLowConfidence ? (
           <motion.div
