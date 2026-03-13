@@ -70,6 +70,8 @@ const Index = () => {
   const [isLowConfidence, setIsLowConfidence] = useState(false);
   const [cameFromScanner, setCameFromScanner] = useState(false);
   const [previousStep, setPreviousStep] = useState<Step | null>(null);
+  const [guidedFixStep, setGuidedFixStep] = useState(0);
+  const [guidedFixPrepPhase, setGuidedFixPrepPhase] = useState<"inventory" | "cart" | "transitioning" | null>("inventory");
 
   const handleStartOver = () => {
     setStep("home");
@@ -90,6 +92,8 @@ const Index = () => {
     setDiagnosticAnswers({});
     setIsLowConfidence(false);
     setCameFromScanner(false);
+    setGuidedFixStep(0);
+    setGuidedFixPrepPhase("inventory");
   };
 
   const HAZARD_KEYWORDS = [
@@ -184,6 +188,10 @@ const Index = () => {
             onBack={() => setStep("results")}
             onStartOver={handleFullReset}
             onProCall={() => { setPreviousStep("guided"); setStep("pro"); }}
+            repairStep={guidedFixStep}
+            onRepairStepChange={setGuidedFixStep}
+            prepPhase={guidedFixPrepPhase}
+            onPrepPhaseChange={setGuidedFixPrepPhase}
           />
         )}
         {step === "pro" && (
