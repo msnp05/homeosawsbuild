@@ -129,14 +129,24 @@ const VisualMultimeter = ({ isGas }: { isGas: boolean }) => (
   </svg>
 );
 
-const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall }: GuidedFixModeProps) => {
+const GuidedFixMode = ({ answers = {}, onBack, onStartOver, onProCall, repairStep, onRepairStepChange, prepPhase: propPrepPhase, onPrepPhaseChange }: GuidedFixModeProps) => {
   const isGas = answers.fuel_type === "Gas (I see a gas line)";
   const PARTS = isGas ? GAS_PARTS : ELECTRIC_PARTS;
 
-  const [prepPhase, setPrepPhase] = useState<PrepPhase>("inventory");
+  const [localPrepPhase, setLocalPrepPhase] = useState<PrepPhase>(propPrepPhase ?? "inventory");
+  const prepPhase = propPrepPhase !== undefined ? propPrepPhase : localPrepPhase;
+  const setPrepPhase = (phase: PrepPhase) => {
+    onPrepPhaseChange ? onPrepPhaseChange(phase) : setLocalPrepPhase(phase);
+  };
+
   const [failedParts, setFailedParts] = useState<Set<string>>(new Set());
   const [ownedTools, setOwnedTools] = useState<Set<string>>(new Set());
-  const [step, setStep] = useState(0);
+  const [localStep, setLocalStep] = useState(repairStep ?? 0);
+  const step = repairStep !== undefined ? repairStep : localStep;
+  const setStep = (s: number | ((prev: number) => number)) => {
+    const newVal = typeof s === 'function' ? s(step) : s;
+    onRepairStepChange ? onRepairStepChange(newVal) : setLocalStep(newVal);
+  };
   const [showSOS, setShowSOS] = useState(false);
 
   const toggleFailedPart = (id: string) => {
