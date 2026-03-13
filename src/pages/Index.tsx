@@ -172,7 +172,7 @@ const Index = () => {
             key="results"
             answers={diagnosticAnswers}
             onGuidedFix={() => setStep("guided")}
-            onProCall={() => setStep("pro")}
+            onProCall={() => { setPreviousStep("results"); setStep("pro"); }}
             onStartOver={handleChangeAnswers}
             isLowConfidence={isLowConfidence}
           />
