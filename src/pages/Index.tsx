@@ -70,6 +70,8 @@ const Index = () => {
   const [isLowConfidence, setIsLowConfidence] = useState(false);
   const [cameFromScanner, setCameFromScanner] = useState(false);
   const [previousStep, setPreviousStep] = useState<Step | null>(null);
+  const [guidedFixStep, setGuidedFixStep] = useState(0);
+  const [guidedFixPrepPhase, setGuidedFixPrepPhase] = useState<"inventory" | "cart" | "transitioning" | null>("inventory");
 
   const handleStartOver = () => {
     setStep("home");
